@@ -64,14 +64,17 @@ html[data-user="bruca"]{
   --cyan:        var(--red);         /* Color de acento principal: anillo de progreso, reloj digital, unidad "h/m/s" del contador principal. */
   --cyan-soft:   var(--red-bright);  /* Acento claro: subtítulo del anillo ("Tiempo para salir…"), ícono de mensajes especiales. */
   --cyan-dim:    var(--red-dim);     /* Acento tenue: pista del anillo, esquinas del HUD, separador del footer. */
-  --white:       var(--white);       /* Texto de alto contraste: números grandes, mensajes especiales, nombre de la materia actual. */
+  /* --white y --font-mono NO se redeclaran acá: ya están definidas arriba,
+     en la paleta de marca (sección 1), con el mismo nombre. Redeclararlas
+     como var(--white)/var(--font-mono) sería una referencia circular
+     (CSS inválido) y el navegador las descarta, dejando el texto sin
+     color y la tipografía sin aplicar. Por eso el bug que viste. */
   --gray:        var(--grey-light);  /* Texto secundario: fecha, etiquetas, unidades pequeñas (h/m/s del recreo/materia). */
   --gray-dim:    var(--grey);        /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--online-green);/* Color de "estado activo": punto y barra cuando el recreo está en curso (en Bruca es verde tipo "online"). */
   --end:         var(--red-bright);  /* Color de alerta de fin de jornada (reservado para estados "urgentes"). */
   --font-display:var(--font-hud);   /* Tipografía de números grandes (contador de salida, recreo, materia). */
   --font-ui:     var(--font-body);  /* Tipografía de interfaz: etiquetas, botones, textos de estado. */
-  --font-mono:   var(--font-mono);  /* Tipografía del reloj digital y del pie de página. */
 
   /* ---------------------------------------------------------------
      3) COMPONENTES RGB (sin alpha) PARA SOMBRAS/GLOWS/PARTÍCULAS
