@@ -34,15 +34,15 @@ html[data-user="bruca"]{
   --------------------------------------------------------------- */
   --red:          #e60012; /* Rojo principal de marca Bruca. Es el color de acento: anillo de progreso, reloj, íconos activos, bordes con brillo. */
   --red-bright:   #ff1a2e; /* Rojo brillante/claro. Se usa en textos secundarios con brillo (subtítulo del anillo) y en el segundo stop de los degradados. */
-  --red-dim:      #8b0000; /* Rojo oscuro/apagado. Bordes tenues del HUD (esquinas, separadores, pista del anillo sin progreso). */
+  --red-dim:      #c81e2f; /* Rojo oscuro pero visible. Bordes del HUD (esquinas, separadores, pista del anillo sin progreso). Antes era casi negro (#8b0000) y se veía apagado; ahora conserva menos brillo que --red pero sigue siendo un rojo bien perceptible. */
   --red-glow:     rgba(230,0,18,0.35); /* Rojo semitransparente. Sombras/resplandores (glow) alrededor de números, ícono especial y botón de sonido activo. */
   --black:        #000000; /* Negro puro. Fondo general de toda la app (<html>, <body>). */
   --black-1:      #0a0a0a; /* Negro casi puro. Fondo elevado nivel 1: paneles semi-transparentes (recreo, materia). */
   --black-2:      #111111; /* Negro con un poco más de luz. Fondo elevado nivel 2: botón de sonido, superficies "flotantes". */
   --black-3:      #1a1a1a; /* Negro gris oscuro. Reservado para superficies con más jerarquía (hover de tarjetas). */
   --black-4:      #222222; /* Negro gris. Reservado para bordes/separadores muy sutiles sobre fondo negro. */
-  --grey:         #333333; /* Gris oscuro. Bordes de paneles y barras de progreso vacías (pista del recreo/materia). */
-  --grey-light:   #666666; /* Gris medio. Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), separadores del footer. */
+  --grey:         #5c5c5c; /* Gris medio (antes #333333, muy oscuro y poco legible como texto). Bordes de paneles, barras de progreso vacías y texto del footer. */
+  --grey-light:   #a3a3a3; /* Gris claro (antes #666666). Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), nombre del profesor. */
   --white:        #f0f0f0; /* Blanco hueso. Texto principal de alto contraste: números grandes del contador, mensajes especiales. */
   --code-keyword: #ff79c6; /* Rosa "keyword" estilo editor de código. No se usa en la UI actual; queda disponible para futuros detalles tipo consola/código. */
   --code-string:  #f1fa8c; /* Amarillo "string" estilo editor de código. Igual que el anterior, reservado para futuros detalles tipo consola. */
@@ -282,7 +282,7 @@ body{
 
 .user-switch .user-btn.is-active{
   background: var(--cyan);
-  color: var(--bg);
+  color: var(--white);
   box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.55);
 }
 
@@ -611,12 +611,21 @@ body{
 }
 
 .subject-name{
-  margin: 0 0 8px;
+  margin: 0 0 2px;
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(1.05rem, 3.4vw, 1.4rem);
   color: var(--white);
   text-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.3);
+}
+
+.subject-teacher{
+  margin: 0 0 8px;
+  font-family: var(--font-ui);
+  font-size: clamp(0.65rem, 1.6vw, 0.78rem);
+  font-style: italic;
+  color: var(--gray);
+  letter-spacing: 0.02em;
 }
 
 .subject-time{

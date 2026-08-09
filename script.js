@@ -34,7 +34,7 @@
 
   const USUARIOS = {
 
-    // =================== BRUCA (6E) ===================
+    // =================== BRUCA (5D) ===================
     bruca: {
       0: { // Domingo — SOLO DE PRUEBA, borrar cuando ya no se necesite testear
         inicio: "13:20",
@@ -54,20 +54,20 @@
         ],
       },
       1: { // Lunes
-        inicio: "13:20",
+        inicio: "08:55",
         salida: "20:55",
         recreos: [
           { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Formación",                      inicio: "13:20", fin: "13:30" },
-          { nombre: "Inglés (Balduzzi Noelia)",       inicio: "13:30", fin: "15:35" },
-          { nombre: "Base De Datos I",                inicio: "15:35", fin: "19:45" },
-          { nombre: "Estadística",                    inicio: "19:45", fin: "20:55" },
+          { nombre: "Educación Física",  inicio: "08:55", fin: "10:15" },
+          { nombre: "Inglés",            profesor: "Balduzzi Noelia", inicio: "13:30", fin: "15:35" },
+          { nombre: "Base De Datos I",   inicio: "15:35", fin: "19:45" },
+          { nombre: "Estadística",       inicio: "19:45", fin: "20:55" },
         ],
       },
       2: { // Martes
@@ -76,15 +76,14 @@
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Formación",                        inicio: "13:20", fin: "13:30" },
-          { nombre: "Lengua (Moya Camila)",             inicio: "13:30", fin: "15:35" },
-          { nombre: "Cuidadanía y Política",            inicio: "15:35", fin: "17:05" },
-          { nombre: "Filosofía (Soncini Agustina)",     inicio: "17:05", fin: "19:05" },
-          { nombre: "Análisis Matemático (Burgos S.)",  inicio: "19:10", fin: "20:55" },
+          { nombre: "Lengua",               profesor: "Moya Camila",     inicio: "13:30", fin: "15:35" },
+          { nombre: "Cuidadanía y Política", inicio: "15:35", fin: "17:05" },
+          { nombre: "Filosofía",            profesor: "Soncini Agustina", inicio: "17:05", fin: "19:05" },
+          { nombre: "Análisis Matemático",  profesor: "Burgos S.",       inicio: "19:10", fin: "20:55" },
         ],
       },
       3: { // Miércoles (jornada reducida)
@@ -94,13 +93,12 @@
           { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
-          { nombre: "Formación",            inicio: "13:20", fin: "13:30" },
-          { nombre: "Educación Física",     inicio: "08:55", fin: "10:15" },
-          { nombre: "Estadísticas",         inicio: "13:30", fin: "14:50" },
-          { nombre: "Programación III",     inicio: "14:55", fin: "19:05" },
+          { nombre: "Educación Física", inicio: "08:55", fin: "10:15" },
+          { nombre: "Estadísticas",     inicio: "13:30", fin: "14:50" },
+          { nombre: "Programación III", inicio: "14:55", fin: "19:05" },
         ],
       },
       4: { // Jueves
@@ -109,15 +107,14 @@
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Formación",                      inicio: "13:20", fin: "13:30" },
-          { nombre: "Economía y Gestión de la Prod. Industrial (Levin N.)", inicio: "13:30", fin: "14:50" },
-          { nombre: "Cuidadanía y Política",                                 inicio: "14:55", fin: "15:35" },
-          { nombre: "Análisis Matemático (Burgos S.)",                      inicio: "15:35", fin: "17:05" },
-          { nombre: "Sistemas y Telecomunicaciones (Choque P.)",            inicio: "17:05", fin: "20:55" },
+          { nombre: "Economía y Gestión de la Prod. Industrial", profesor: "Levin N.",  inicio: "13:30", fin: "14:50" },
+          { nombre: "Cuidadanía y Política",                     inicio: "14:55", fin: "15:35" },
+          { nombre: "Análisis Matemático",                       profesor: "Burgos S.", inicio: "15:35", fin: "17:05" },
+          { nombre: "Sistemas y Telecomunicaciones",             profesor: "Choque P.", inicio: "17:05", fin: "20:55" },
         ],
       },
       5: { // Viernes (jornada reducida)
@@ -126,13 +123,12 @@
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
-          { nombre: "Formación",                                                inicio: "13:20", fin: "13:30" },
-          { nombre: "Recursos Humanos (Oviedo Ivana)",                          inicio: "13:30", fin: "15:35" },
-          { nombre: "Ed. Artística Teatro",                                     inicio: "15:35", fin: "17:05" },
-          { nombre: "Economía y Gestión de la Prod. Industrial (Nancy)",        inicio: "17:05", fin: "18:30" },
+          { nombre: "Recursos Humanos",                          profesor: "Oviedo Ivana", inicio: "13:30", fin: "15:35" },
+          { nombre: "Ed. Artística Teatro",                      inicio: "15:35", fin: "17:05" },
+          { nombre: "Economía y Gestión de la Prod. Industrial", profesor: "Nancy",        inicio: "17:05", fin: "18:30" },
         ],
       },
     },
@@ -160,10 +156,10 @@
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Sist. Inform. Contable (Barrionuevo)", inicio: "13:00", fin: "15:00" },
-          { nombre: "Educación Física (Córdoba)",            inicio: "15:15", fin: "16:25" },
-          { nombre: "Matemática (Sánchez)",                  inicio: "16:25", fin: "17:45" },
-          { nombre: "Administración (Prado)",                inicio: "17:45", fin: "19:40" },
+          { nombre: "Sist. Inform. Contable", profesor: "Barrionuevo", inicio: "13:00", fin: "15:00" },
+          { nombre: "Educación Física",       profesor: "Córdoba",     inicio: "15:15", fin: "16:25" },
+          { nombre: "Matemática",             profesor: "Sánchez",     inicio: "16:25", fin: "17:45" },
+          { nombre: "Administración",         profesor: "Prado",       inicio: "17:45", fin: "19:40" },
         ],
       },
       2: { // Martes
@@ -174,10 +170,10 @@
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Lengua y Literatura",                       inicio: "13:00", fin: "14:20" },
-          { nombre: "Derecho (Sánchez)",                         inicio: "14:20", fin: "16:25" },
-          { nombre: "Form. para la Vida y el Trabajo (Rodríguez)", inicio: "16:25", fin: "18:30" },
-          { nombre: "Química (Rocha)",                           inicio: "18:30", fin: "19:40" },
+          { nombre: "Lengua y Literatura",                 inicio: "13:00", fin: "14:20" },
+          { nombre: "Derecho",                              profesor: "Sánchez",   inicio: "14:20", fin: "16:25" },
+          { nombre: "Form. para la Vida y el Trabajo",     profesor: "Rodríguez", inicio: "16:25", fin: "18:30" },
+          { nombre: "Química",                              profesor: "Rocha",     inicio: "18:30", fin: "19:40" },
         ],
       },
       3: { // Miércoles (jornada reducida)
@@ -188,10 +184,10 @@
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Educación Física (Córdoba)", inicio: "13:00", fin: "14:20" },
-          { nombre: "Lengua y Literatura",         inicio: "14:20", fin: "15:45" },
-          { nombre: "Química (Rocha)",             inicio: "15:45", fin: "17:10" },
-          { nombre: "Economía (Rosas)",            inicio: "17:15", fin: "19:10" },
+          { nombre: "Educación Física",   profesor: "Córdoba", inicio: "13:00", fin: "14:20" },
+          { nombre: "Lengua y Literatura", inicio: "14:20", fin: "15:45" },
+          { nombre: "Química",            profesor: "Rocha",   inicio: "15:45", fin: "17:10" },
+          { nombre: "Economía",           profesor: "Rosas",   inicio: "17:15", fin: "19:10" },
         ],
       },
       4: { // Jueves
@@ -202,10 +198,10 @@
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Matemática (Sánchez)",                 inicio: "13:00", fin: "14:20" },
-          { nombre: "Teatro (Alessio)",                      inicio: "14:20", fin: "16:25" },
-          { nombre: "Adm. de la Producción / ConTIC (Rosas-Rocha)", inicio: "16:25", fin: "17:45" },
-          { nombre: "Inglés (Herrera)",                      inicio: "17:45", fin: "19:40" },
+          { nombre: "Matemática",                   profesor: "Sánchez",      inicio: "13:00", fin: "14:20" },
+          { nombre: "Teatro",                        profesor: "Alessio",      inicio: "14:20", fin: "16:25" },
+          { nombre: "Adm. de la Producción / ConTIC", profesor: "Rosas-Rocha", inicio: "16:25", fin: "17:45" },
+          { nombre: "Inglés",                        profesor: "Herrera",      inicio: "17:45", fin: "19:40" },
         ],
       },
       5: { // Viernes
@@ -216,10 +212,10 @@
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Filosofía (Mercado)",                          inicio: "13:00", fin: "15:00" },
-          { nombre: "Ciudadanía y Política (Sánchez A.)",            inicio: "15:15", fin: "17:10" },
-          { nombre: "Adm. de la Producción / ConTIC (Rosas-Rocha)",  inicio: "17:15", fin: "17:45" },
-          { nombre: "Sist. Inform. Contable (Barrionuevo)",          inicio: "17:45", fin: "19:40" },
+          { nombre: "Filosofía",                      profesor: "Mercado",     inicio: "13:00", fin: "15:00" },
+          { nombre: "Ciudadanía y Política",           profesor: "Sánchez A.", inicio: "15:15", fin: "17:10" },
+          { nombre: "Adm. de la Producción / ConTIC",  profesor: "Rosas-Rocha", inicio: "17:15", fin: "17:45" },
+          { nombre: "Sist. Inform. Contable",          profesor: "Barrionuevo", inicio: "17:45", fin: "19:40" },
         ],
       },
     },
@@ -285,6 +281,7 @@
     subjectDot: document.getElementById("subject-dot"),
     subjectStatus: document.getElementById("subject-status"),
     subjectName: document.getElementById("subject-name"),
+    subjectTeacher: document.getElementById("subject-teacher"),
     subjectH: document.getElementById("subject-h"),
     subjectM: document.getElementById("subject-m"),
     subjectS: document.getElementById("subject-s"),
@@ -580,6 +577,18 @@
     return `Quedan ${cantidad} materias después de esta`;
   }
 
+  // Muestra "Con el profesor/a: [Nombre]" solo si la materia tiene el
+  // campo "profesor" cargado; si no lo tiene, oculta la línea por completo.
+  function mostrarProfesor(materia) {
+    if (materia && materia.profesor) {
+      el.subjectTeacher.textContent = `Con el profesor/a: ${materia.profesor}`;
+      el.subjectTeacher.hidden = false;
+    } else {
+      el.subjectTeacher.textContent = "";
+      el.subjectTeacher.hidden = true;
+    }
+  }
+
   function actualizarPanelMaterias(infoMateria, ahora) {
     if (infoMateria.tipo === "en_clase") {
       if (estadoMateriaAnterior !== infoMateria.actual.nombre) sonarCambioDeMateria();
@@ -588,6 +597,7 @@
       el.subjectPanel.classList.add("is-active");
       el.subjectStatus.textContent = "Estás en clase de";
       el.subjectName.textContent = infoMateria.actual.nombre;
+      mostrarProfesor(infoMateria.actual);
 
       const restante = infoMateria.actual.finDate - ahora;
       const { h, m, s } = calcularTiempoRestante(restante);
@@ -608,6 +618,7 @@
       estadoMateriaAnterior = "esperando";
       el.subjectStatus.textContent = "Sin clase en este momento";
       el.subjectName.textContent = infoMateria.siguiente.nombre;
+      mostrarProfesor(infoMateria.siguiente);
 
       const restante = infoMateria.siguiente.inicioDate - ahora;
       const { h, m, s } = calcularTiempoRestante(restante);
@@ -624,6 +635,7 @@
     estadoMateriaAnterior = "sin_materias";
     el.subjectStatus.textContent = "Sin más clases hoy";
     el.subjectName.textContent = "Esperando la salida";
+    mostrarProfesor(null);
     escribirNumero(el.subjectH, 0);
     escribirNumero(el.subjectM, 0);
     escribirNumero(el.subjectS, 0);
@@ -636,6 +648,17 @@
   ----------------------------------------------------------------- */
 
   let estadoRecreoAnterior = null; // para detectar transiciones y disparar sonido
+
+  // Convierte la fracción de recreo transcurrida (0 = recién empieza,
+  // 1 = se está por terminar) en un color que va de verde a amarillo,
+  // naranja y rojo. Se usa el modelo HSL: el tono (hue) arranca en 120°
+  // (verde) y baja hasta 0° (rojo), pasando naturalmente por el amarillo
+  // (~60°) y el naranja (~35°) a mitad y tres cuartos de camino.
+  function colorSegunRecreoRestante(transcurrido) {
+    const t = Math.min(1, Math.max(0, transcurrido));
+    const hue = 120 * (1 - t);
+    return `hsl(${hue.toFixed(0)}, 85%, 50%)`;
+  }
 
   function actualizarContadorSecundario(infoRecreo, ahora) {
     if (infoRecreo.tipo === "en_curso") {
@@ -654,10 +677,17 @@
       escribirNumero(el.recessM, m);
       escribirNumero(el.recessS, s);
       el.recessFill.style.width = `${Math.min(100, Math.max(0, transcurrido * 100))}%`;
+      // Color dinámico verde → amarillo → naranja → rojo según lo que
+      // queda de recreo (pisa el degradado cian/violeta del CSS mientras
+      // el recreo está en curso).
+      el.recessFill.style.background = colorSegunRecreoRestante(transcurrido);
       return;
     }
 
     el.recessPanel.classList.remove("is-active");
+    // Fuera del recreo en curso, se vuelve a dejar que el color lo
+    // controle el CSS (degradado cian normal / violeta de "próximo").
+    el.recessFill.style.background = "";
 
     if (infoRecreo.tipo === "proximo") {
       estadoRecreoAnterior = "proximo";
