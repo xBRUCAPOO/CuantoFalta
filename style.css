@@ -1,8 +1,8 @@
 /* ===================================================================
    ¿CUÁNTO FALTA? — Estilos
-   Estética HUD / panel técnico. La app soporta 2 usuarios (Bruca y Mely),
-   cada uno con su propia paleta de colores y tipografías, definidas
-   como variables CSS dentro de :root / html[data-user="..."].
+   Estética HUD / hacker-terminal cyberpunk. La app soporta 2 usuarios
+   (Bruca y Mely), cada uno con su propia paleta de colores y tipografías,
+   definidas como variables CSS dentro de :root / html[data-user="..."].
    El usuario activo se controla agregando el atributo data-user al
    elemento <html> (lo hace script.js), por lo que TODO el CSS de abajo
    sigue usando siempre los mismos nombres de variable "funcionales"
@@ -34,19 +34,19 @@ html[data-user="bruca"]{
   --------------------------------------------------------------- */
   --red:          #e60012; /* Rojo principal de marca Bruca. Es el color de acento: anillo de progreso, reloj, íconos activos, bordes con brillo. */
   --red-bright:   #ff1a2e; /* Rojo brillante/claro. Se usa en textos secundarios con brillo (subtítulo del anillo) y en el segundo stop de los degradados. */
-  --red-dim:      #c81e2f; /* Rojo oscuro pero visible. Bordes del HUD (esquinas, separadores, pista del anillo sin progreso). Antes era casi negro (#8b0000) y se veía apagado; ahora conserva menos brillo que --red pero sigue siendo un rojo bien perceptible. */
+  --red-dim:      #c81e2f; /* Rojo oscuro pero visible. Bordes del HUD (esquinas, separadores, pista del anillo sin progreso). */
   --red-glow:     rgba(230,0,18,0.35); /* Rojo semitransparente. Sombras/resplandores (glow) alrededor de números, ícono especial y botón de sonido activo. */
   --black:        #000000; /* Negro puro. Fondo general de toda la app (<html>, <body>). */
   --black-1:      #0a0a0a; /* Negro casi puro. Fondo elevado nivel 1: paneles semi-transparentes (recreo, materia). */
   --black-2:      #111111; /* Negro con un poco más de luz. Fondo elevado nivel 2: botón de sonido, superficies "flotantes". */
   --black-3:      #1a1a1a; /* Negro gris oscuro. Reservado para superficies con más jerarquía (hover de tarjetas). */
   --black-4:      #222222; /* Negro gris. Reservado para bordes/separadores muy sutiles sobre fondo negro. */
-  --grey:         #5c5c5c; /* Gris medio (antes #333333, muy oscuro y poco legible como texto). Bordes de paneles, barras de progreso vacías y texto del footer. */
-  --grey-light:   #a3a3a3; /* Gris claro (antes #666666). Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), nombre del profesor. */
+  --grey:         #5c5c5c; /* Gris medio. Bordes de paneles, barras de progreso vacías y texto del footer. */
+  --grey-light:   #a3a3a3; /* Gris claro. Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), nombre del profesor. */
   --white:        #f0f0f0; /* Blanco hueso. Texto principal de alto contraste: números grandes del contador, mensajes especiales. */
-  --code-keyword: #ff79c6; /* Rosa "keyword" estilo editor de código. No se usa en la UI actual; queda disponible para futuros detalles tipo consola/código. */
-  --code-string:  #f1fa8c; /* Amarillo "string" estilo editor de código. Igual que el anterior, reservado para futuros detalles tipo consola. */
-  --orange:       #b77400; /* Naranja apagado. Reservado para estados de alerta intermedios (ej. "quedan pocos minutos"). */
+  --code-keyword: #ff79c6; /* Rosa "keyword" estilo editor de código. Reservado para futuros detalles tipo consola/código. */
+  --code-string:  #f1fa8c; /* Amarillo "string" estilo editor de código. Reservado para futuros detalles tipo consola. */
+  --orange:       #b77400; /* Naranja apagado. Reservado para estados de alerta intermedios. */
   --green:        #009c22; /* Verde. Color de estado "activo/en curso": punto del recreo cuando está en curso, barra de progreso del recreo activo. */
   --online-green: #00ff88; /* Verde brillante. Glow del estado "en curso" (sombra del punto verde y de la barra activa). */
   --font-mono:    'Share Tech Mono', monospace; /* Tipografía mono estilo terminal. Se usa en el reloj superior y en el pie de página ("SISTEMA ESCOLAR · TIEMPO REAL"). */
@@ -55,8 +55,6 @@ html[data-user="bruca"]{
 
   /* ---------------------------------------------------------------
      2) MAPEO A VARIABLES FUNCIONALES
-     Todo el resto del CSS (abajo) usa estos nombres genéricos, así que
-     alcanza con re-asignarlos acá para "pintar" toda la app de rojo/negro.
   --------------------------------------------------------------- */
   --bg:          var(--black);    /* Fondo de <html>/<body>. */
   --bg-elev:     var(--black-2);  /* Fondo de superficies elevadas: botón de sonido, panel de recreo y de materia. */
@@ -64,11 +62,6 @@ html[data-user="bruca"]{
   --cyan:        var(--red);         /* Color de acento principal: anillo de progreso, reloj digital, unidad "h/m/s" del contador principal. */
   --cyan-soft:   var(--red-bright);  /* Acento claro: subtítulo del anillo ("Tiempo para salir…"), ícono de mensajes especiales. */
   --cyan-dim:    var(--red-dim);     /* Acento tenue: pista del anillo, esquinas del HUD, separador del footer. */
-  /* --white y --font-mono NO se redeclaran acá: ya están definidas arriba,
-     en la paleta de marca (sección 1), con el mismo nombre. Redeclararlas
-     como var(--white)/var(--font-mono) sería una referencia circular
-     (CSS inválido) y el navegador las descarta, dejando el texto sin
-     color y la tipografía sin aplicar. Por eso el bug que viste. */
   --gray:        var(--grey-light);  /* Texto secundario: fecha, etiquetas, unidades pequeñas (h/m/s del recreo/materia). */
   --gray-dim:    var(--grey);        /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--online-green);/* Color de "estado activo": punto y barra cuando el recreo está en curso (en Bruca es verde tipo "online"). */
@@ -78,12 +71,9 @@ html[data-user="bruca"]{
 
   /* ---------------------------------------------------------------
      3) COMPONENTES RGB (sin alpha) PARA SOMBRAS/GLOWS/PARTÍCULAS
-     Se usan dentro de rgba(var(--x-rgb), alpha) para poder variar
-     la opacidad de brillos, líneas de scanlines y partículas de fondo
-     sin tener que declarar una variable nueva por cada opacidad.
   --------------------------------------------------------------- */
   --cyan-rgb:      230, 0, 18;    /* Componentes RGB de --cyan (rojo). Glow del reloj, del anillo y de los números al cambiar. */
-  --cyan-soft-rgb: 255, 26, 46;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números y en glowPulse. */
+  --cyan-soft-rgb: 255, 26, 46;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números. */
   --white-rgb:     240, 240, 240; /* Componentes RGB de --white. Puntos/líneas del fondo animado de partículas. */
   --violet-rgb:    0, 255, 136;   /* Componentes RGB de --violet. Glow del panel de recreo cuando está activo. */
 }
@@ -99,43 +89,22 @@ html:not([data-user]){
   /* ---------------------------------------------------------------
      1) PALETA DE MARCA "MELY" (colores de origen del tema)
   --------------------------------------------------------------- */
-  /*==========================================
-      COLORES PRINCIPALES
-  ==========================================*/
   --color-principal:        #000180; /* Azul principal de marca Mely. Acento: anillo de progreso, reloj, unidades h/m/s. */
   --color-principal-hover:  #1B2FBF; /* Azul intermedio (hover/brillo). Subtítulos con brillo, íconos de mensajes especiales. */
   --color-principal-activo: #3248E6; /* Azul más claro/activo. Estado "en curso": punto y barra del recreo cuando está activo. */
-  /*==========================================
-      FONDOS (mucho más oscuros)
-  ==========================================*/
   --color-fondo:            #02030A; /* Fondo general de <html>/<body>. */
   --color-fondo-secundario: #04060F; /* Fondo de superficies elevadas: botón de sonido, panel de recreo y de materia. */
   --color-fondo-terciario:  #060A1C; /* Fondo elevado alterno, disponible para futuras superficies (no se usa aún). */
   --color-card:             #080B20; /* Fondo de tarjetas/paneles con más jerarquía. Reservado para futuros bloques tipo "card". */
-  /*==========================================
-      TEXTO
-  ==========================================*/
   --color-texto:            #E8EEFF; /* Texto de alto contraste: números grandes, mensajes especiales, nombre de la materia actual. */
   --color-texto-secundario: #BFCBFF; /* Texto secundario: fecha, etiquetas, unidades pequeñas (h/m/s del recreo/materia). */
   --color-texto-apagado:    #8796D8; /* Texto apagado: bordes y pistas de barras (recreo, materia, footer). */
-  /*==========================================
-      BORDES
-  ==========================================*/
   --color-borde:            #243CBE; /* Borde de acento tenue: pista del anillo, esquinas del HUD, separador del footer. */
   --color-borde-suave:      rgba(36, 60, 190, .25); /* Borde suave semitransparente. Reservado para futuros contornos delicados. */
-  /*==========================================
-      SOMBRAS
-  ==========================================*/
   --sombra-principal:       rgba(0, 1, 128, .45); /* Sombra fuerte del color principal. Reservada para elevar tarjetas/botones. */
   --sombra-suave:           rgba(39, 64, 255, .18); /* Sombra suave del color principal. Reservada para hovers sutiles. */
-  /*==========================================
-      GLASS
-  ==========================================*/
   --glass:                  rgba(4, 6, 16, .60); /* Fondo tipo "vidrio esmerilado". Base del panel de recreo y de materia. */
   --glass-hover:             rgba(8, 11, 26, .72); /* Fondo "vidrio" al interactuar/hover. Reservado para estados hover de paneles. */
-  /*==========================================
-      DEGRADADOS
-  ==========================================*/
   --degradado-fondo: linear-gradient(180deg, #02030A 0%, #04060F 35%, #05081A 70%, #060A1C 100%); /* Degradado de fondo general. Reservado para un futuro fondo alternativo al canvas de partículas. */
   --degradado-boton: linear-gradient(135deg, #000180 0%, #3248E6 100%); /* Degradado del color principal. Usado en la barra de progreso del recreo/materia. */
 
@@ -152,7 +121,7 @@ html:not([data-user]){
   --gray:        var(--color-texto-secundario);  /* Texto secundario: fecha, etiquetas, unidades pequeñas. */
   --gray-dim:    var(--color-texto-apagado);     /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--color-principal-activo);  /* Color de "estado activo": punto y barra cuando el recreo está en curso. */
-  --end:         #ff2d55; /* Color de alerta de fin de jornada. No estaba en la paleta original de Mely; se agrega como acento rojo de aviso (reservado para estados "urgentes"). */
+  --end:         #ff2d55; /* Color de alerta de fin de jornada. Acento rojo de aviso (reservado para estados "urgentes"). */
   --font-display:'Orbitron', sans-serif;    /* Tipografía de números grandes (contador de salida, recreo, materia). */
   --font-ui:     'Chakra Petch', sans-serif; /* Tipografía de interfaz: etiquetas, botones, textos de estado. */
   --font-mono:   'JetBrains Mono', monospace; /* Tipografía del reloj digital y del pie de página. */
@@ -161,7 +130,7 @@ html:not([data-user]){
      3) COMPONENTES RGB (sin alpha) PARA SOMBRAS/GLOWS/PARTÍCULAS
   --------------------------------------------------------------- */
   --cyan-rgb:      0, 1, 128;     /* Componentes RGB de --cyan (azul). Glow del reloj, del anillo y de los números al cambiar. */
-  --cyan-soft-rgb: 27, 47, 191;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números y en glowPulse. */
+  --cyan-soft-rgb: 27, 47, 191;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números. */
   --white-rgb:     232, 238, 255; /* Componentes RGB de --white. Puntos/líneas del fondo animado de partículas. */
   --violet-rgb:    50, 72, 230;   /* Componentes RGB de --violet. Glow del panel de recreo/materia cuando está activo. */
 }
@@ -208,6 +177,7 @@ body{
     transparent 3px
   );
   mix-blend-mode: screen;
+  animation: scanFlicker 6s ease-in-out infinite;
 }
 
 .vignette{
@@ -216,6 +186,31 @@ body{
   z-index: 1;
   pointer-events: none;
   background: radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(0,0,0,0.65) 100%);
+}
+
+/* Barra de "escaneo" que cruza toda la pantalla: se dispara desde script.js
+   (clase .play) cada vez que cambia la materia o entra/sale un recreo,
+   como si un sistema estuviera re-escaneando el horario. */
+.glitch-sweep{
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -6%;
+  height: 3px;
+  z-index: 7;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(var(--cyan-rgb), 0.95), transparent);
+  box-shadow: 0 0 22px rgba(var(--cyan-rgb), 0.85), 0 0 60px rgba(var(--cyan-rgb), 0.35);
+  opacity: 0;
+}
+.glitch-sweep.play{
+  animation: glitchSweepPlay 0.65s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes glitchSweepPlay{
+  0%{ top: -6%; opacity: 0; }
+  8%{ opacity: 1; }
+  92%{ opacity: 1; }
+  100%{ top: 104%; opacity: 0; }
 }
 
 /* -------------------- Marco HUD en las esquinas -------------------- */
@@ -237,7 +232,9 @@ body{
 
 @keyframes cornerGlow{
   0%, 100%{ opacity: 0.35; }
-  50%{ opacity: 0.8; }
+  48%{ opacity: 0.8; }
+  50%{ opacity: 0.2; }
+  52%{ opacity: 0.8; }
 }
 
 /* -------------------- Switch de usuario (Bruca / Mely) -------------------- */
@@ -255,9 +252,40 @@ body{
   border: 1px solid var(--gray-dim);
   background: rgba(var(--cyan-rgb), 0.08);
   backdrop-filter: blur(6px);
+  transition: opacity 0.4s ease;
+}
+
+/* Pastilla que se desliza fluidamente hacia el botón del usuario activo.
+   script.js calcula su ancho/posición exactos (offsetWidth/offsetLeft del
+   botón activo) y los aplica como transform + width inline; acá solo se
+   define la transición suave y la estética. */
+.user-switch-slider{
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 50%;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(var(--cyan-rgb),0.95), rgba(var(--cyan-rgb),0.55));
+  box-shadow: 0 0 18px rgba(var(--cyan-rgb),0.65), inset 0 0 10px rgba(255,255,255,0.12);
+  clip-path: polygon(6% 0, 100% 0, 94% 100%, 0% 100%); /* recorte angular, look HUD */
+  overflow: hidden;
+  z-index: 0;
+  transition: transform 0.55s cubic-bezier(.16,1,.3,1), width 0.55s cubic-bezier(.16,1,.3,1), background 0.4s;
+  will-change: transform;
+}
+.user-switch-slider::after{
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+  animation: shimmer 3s ease-in-out infinite;
 }
 
 .user-switch .user-btn{
+  position: relative;
+  z-index: 1;
   appearance: none;
   border: none;
   background: transparent;
@@ -270,7 +298,7 @@ body{
   padding: 6px 16px;
   border-radius: 999px;
   cursor: pointer;
-  transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+  transition: color 0.3s, text-shadow 0.3s;
 }
 
 .user-switch .user-btn:hover{ color: var(--white); }
@@ -281,9 +309,8 @@ body{
 }
 
 .user-switch .user-btn.is-active{
-  background: var(--cyan);
   color: var(--white);
-  box-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.55);
+  text-shadow: 0 0 10px rgba(255,255,255,0.65);
 }
 
 /* -------------------- Botón de sonido -------------------- */
@@ -303,7 +330,7 @@ body{
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s, opacity 0.4s;
 }
 .sound-toggle:hover{ border-color: var(--cyan-dim); color: var(--cyan); }
 .sound-toggle:focus-visible{
@@ -332,10 +359,11 @@ body{
   padding: clamp(14px, 3vh, 28px) clamp(16px, 4vw, 32px);
   padding-top: clamp(52px, 8vh, 72px);
   text-align: center;
+  transition: opacity 0.4s ease;
 }
 
 .topbar{
-  animation: fadeInDown 0.9s ease both;
+  animation: glitchReveal 0.8s ease both;
 }
 
 .date{
@@ -358,6 +386,7 @@ body{
   text-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.45), 0 0 2px rgba(var(--cyan-rgb), 0.6);
 }
 .clock .colon{ animation: blink 1s steps(1) infinite; color: var(--gray); margin: 0 2px; }
+.clock .num{ display: inline-block; min-width: 1.2ch; }
 
 /* -------------------- Escenario central -------------------- */
 
@@ -381,7 +410,24 @@ body{
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeInUp 1s ease 0.1s both, floaty 7s ease-in-out infinite;
+  animation: glitchReveal 0.9s ease 0.1s both, floaty 7s ease-in-out infinite 1s;
+}
+
+/* Halo pulsante detrás del anillo principal, le da profundidad y sensación
+   de "energía" al contador central */
+.ring-wrap::before{
+  content: "";
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--cyan-rgb), 0.22), transparent 70%);
+  filter: blur(18px);
+  z-index: -1;
+  animation: haloPulse 4.5s ease-in-out infinite;
+}
+@keyframes haloPulse{
+  0%, 100%{ opacity: 0.5; transform: scale(0.96); }
+  50%{ opacity: 1; transform: scale(1.05); }
 }
 
 .ring{ width: 100%; height: 100%; overflow: visible; }
@@ -466,7 +512,7 @@ body{
   font-weight: 500;
 }
 
-.num.pulse{ animation: numPulse 0.45s ease; }
+.pulse{ animation: numPulse 0.45s ease; }
 
 .sub-status{
   margin: 4px 0 0;
@@ -485,13 +531,30 @@ body{
   border-radius: 14px;
   padding: clamp(12px, 2vh, 18px) clamp(16px, 4vw, 26px);
   backdrop-filter: blur(6px);
-  animation: fadeInUp 1s ease 0.3s both;
-  transition: border-color 0.4s, box-shadow 0.4s;
+  animation: glitchReveal 0.9s ease 0.3s both;
+  transition: border-color 0.4s, box-shadow 0.4s, transform 0.3s ease;
+}
+
+.recess-panel:hover{
+  transform: translateY(-3px);
+  border-color: var(--cyan-dim);
+  box-shadow: 0 8px 26px rgba(var(--cyan-rgb), 0.18);
 }
 
 .recess-panel.is-active{
   border-color: var(--violet);
   box-shadow: 0 0 24px rgba(var(--violet-rgb), 0.25);
+}
+
+/* Destello + distorsión breve cuando arranca/termina un recreo (JS agrega
+   y quita esta clase mediante la transición detectada en actualizarContadorSecundario) */
+.recess-panel.flash{ animation: recessFlash 0.7s ease; }
+@keyframes recessFlash{
+  0%{ box-shadow: 0 0 0 rgba(var(--violet-rgb), 0); transform: translate(0,0); }
+  20%{ box-shadow: 0 0 34px rgba(var(--violet-rgb), 0.75); transform: translate(-3px, 0) skewX(-1deg); }
+  40%{ transform: translate(3px, 0) skewX(1deg); }
+  60%{ transform: translate(-1px, 0) skewX(0deg); }
+  100%{ box-shadow: 0 0 24px rgba(var(--violet-rgb), 0.25); transform: translate(0,0); }
 }
 
 .recess-head{
@@ -503,6 +566,7 @@ body{
 }
 
 .recess-dot{
+  position: relative;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -513,6 +577,17 @@ body{
   background: var(--violet);
   box-shadow: 0 0 10px var(--violet);
   animation: dotPulse 1.4s ease-in-out infinite;
+}
+/* Anillo tipo "radar" que se expande desde el punto cuando el recreo
+   está en curso — refuerzo visual de "señal activa". */
+.recess-panel.is-active .recess-dot::after{
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--violet);
+  opacity: 0;
+  animation: radarPing 1.6s ease-out infinite;
 }
 
 .recess-label{
@@ -572,13 +647,29 @@ body{
   border-radius: 14px;
   padding: clamp(12px, 2vh, 18px) clamp(16px, 4vw, 26px);
   backdrop-filter: blur(6px);
-  animation: fadeInUp 1s ease 0.2s both;
-  transition: border-color 0.4s, box-shadow 0.4s;
+  animation: glitchReveal 0.9s ease 0.2s both;
+  transition: border-color 0.4s, box-shadow 0.4s, transform 0.3s ease;
+}
+
+.subject-panel:hover{
+  transform: translateY(-3px);
+  border-color: var(--cyan-dim);
+  box-shadow: 0 8px 26px rgba(var(--cyan-rgb), 0.18);
 }
 
 .subject-panel.is-active{
   border-color: var(--cyan);
   box-shadow: 0 0 24px rgba(var(--cyan-rgb), 0.25);
+}
+
+/* Destello + distorsión breve cuando cambia la materia en curso */
+.subject-panel.flash{ animation: subjectFlash 0.7s ease; }
+@keyframes subjectFlash{
+  0%{ box-shadow: 0 0 0 rgba(var(--cyan-rgb), 0); transform: translate(0,0); filter: none; }
+  18%{ box-shadow: 0 0 36px rgba(var(--cyan-rgb), 0.8); transform: translate(-4px, 1px) skewX(-1.5deg); filter: hue-rotate(15deg); }
+  36%{ transform: translate(4px, -1px) skewX(1.5deg); filter: hue-rotate(-15deg); }
+  54%{ transform: translate(-2px, 0) skewX(0deg); filter: none; }
+  100%{ box-shadow: 0 0 24px rgba(var(--cyan-rgb), 0.25); transform: translate(0,0); }
 }
 
 .subject-head{
@@ -590,6 +681,7 @@ body{
 }
 
 .subject-dot{
+  position: relative;
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -600,6 +692,15 @@ body{
   background: var(--cyan);
   box-shadow: 0 0 10px var(--cyan);
   animation: dotPulse 1.4s ease-in-out infinite;
+}
+.subject-panel.is-active .subject-dot::after{
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--cyan);
+  opacity: 0;
+  animation: radarPing 1.6s ease-out infinite;
 }
 
 .subject-status{
@@ -617,6 +718,7 @@ body{
   font-size: clamp(1.05rem, 3.4vw, 1.4rem);
   color: var(--white);
   text-shadow: 0 0 14px rgba(var(--cyan-rgb), 0.3);
+  min-height: 1.3em;
 }
 
 .subject-teacher{
@@ -674,7 +776,7 @@ body{
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  animation: fadeIn 0.8s ease both;
+  animation: glitchReveal 0.8s ease both;
 }
 
 .special-icon{
@@ -692,6 +794,7 @@ body{
   font-weight: 500;
   color: var(--white);
   letter-spacing: 0.02em;
+  min-height: 1.4em;
 }
 
 /* -------------------- Pie -------------------- */
@@ -705,35 +808,197 @@ body{
   gap: 8px;
   animation: fadeIn 1.4s ease both;
 }
-.footer .dot-sep{ color: var(--cyan-dim); }
+.footer .dot-sep{ color: var(--cyan-dim); animation: blink 2s steps(1) infinite; }
 
 /* -------------------- Estado: fin de jornada -------------------- */
 
 body.state-ended .ring-progress{ stroke: url(#ringGrad); opacity: 0.25; }
 body.state-ended .clock{ color: var(--gray); text-shadow: none; }
 
+/* ===================================================================
+   MODO CRÍTICO — últimos 15 segundos antes de la salida.
+   Oculta toda la decoración de la interfaz (topbar, esquinas, switch de
+   usuario, botón de sonido, anillo, paneles, footer) y deja en pantalla
+   únicamente la cuenta regresiva de segundos y milisegundos.
+=================================================================== */
+
+body.critical-mode .app,
+body.critical-mode .corner,
+body.critical-mode .user-switch,
+body.critical-mode .sound-toggle{
+  opacity: 0;
+  pointer-events: none;
+}
+
+.critical-countdown{
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.critical-label{
+  margin: 0;
+  font-family: var(--font-ui);
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  font-size: clamp(0.75rem, 2.2vw, 1.05rem);
+  color: var(--cyan-soft);
+  animation: criticalLabelFlicker 0.6s steps(2) infinite;
+}
+
+.critical-time{
+  font-family: var(--font-display);
+  font-weight: 900;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--white);
+  text-shadow:
+    0 0 26px rgba(var(--cyan-rgb), 0.9),
+    2px 0 0 rgba(255,0,60,0.55),
+    -2px 0 0 rgba(0,255,255,0.55);
+}
+/* Se dispara una vez por cada segundo que pasa (JS alterna la clase) */
+.critical-countdown.tick .critical-time{
+  animation: criticalTick 0.35s ease;
+}
+@keyframes criticalTick{
+  0%{ transform: scale(1); filter: none; }
+  15%{ transform: scale(1.08) translate(-3px,1px) skewX(-3deg); filter: hue-rotate(25deg) brightness(1.5); }
+  35%{ transform: scale(1.03) translate(3px,-1px) skewX(3deg); filter: hue-rotate(-20deg); }
+  60%{ transform: scale(1.05); filter: none; }
+  100%{ transform: scale(1); filter: none; }
+}
+
+.critical-sec{ font-size: clamp(4rem, 26vw, 11rem); }
+.critical-sep{ font-size: clamp(2rem, 10vw, 4rem); color: var(--cyan); opacity: 0.6; animation: blink 0.5s steps(1) infinite; }
+.critical-ms{ font-size: clamp(1.6rem, 8vw, 3.2rem); color: var(--cyan-soft); min-width: 3ch; display: inline-block; }
+
+@keyframes criticalLabelFlicker{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0.35; }
+}
+
+/* -------------------- Animación final (llegada a 0) -------------------- */
+
+.finale-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--black, #000);
+  opacity: 0;
+  pointer-events: none;
+}
+.finale-overlay.play{
+  animation: finaleFlashBg 2.6s ease forwards;
+}
+@keyframes finaleFlashBg{
+  0%{ opacity: 0; background: var(--white); }
+  4%{ opacity: 1; background: var(--white); }
+  9%{ opacity: 1; background: var(--black); }
+  13%{ opacity: 0.95; background: rgba(var(--cyan-rgb),0.9); }
+  17%{ opacity: 1; background: var(--black); }
+  88%{ opacity: 1; background: var(--black); }
+  100%{ opacity: 0; background: var(--black); }
+}
+
+.finale-text{
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.7rem, 8vw, 3.6rem);
+  letter-spacing: 0.08em;
+  color: var(--white);
+  opacity: 0;
+  text-shadow: 0 0 30px rgba(var(--cyan-rgb),0.9);
+}
+.finale-overlay.play .finale-text{
+  animation: finaleTextReveal 2.6s ease forwards;
+}
+@keyframes finaleTextReveal{
+  0%, 20%{ opacity: 0; letter-spacing: 0.5em; filter: blur(8px); }
+  32%{ opacity: 1; letter-spacing: 0.08em; filter: blur(0); }
+  86%{ opacity: 1; }
+  100%{ opacity: 0; }
+}
+
 /* -------------------- Animaciones -------------------- */
 
 @keyframes fadeIn{ from{ opacity: 0; } to{ opacity: 1; } }
-@keyframes fadeInUp{ from{ opacity: 0; transform: translateY(18px); } to{ opacity: 1; transform: translateY(0); } }
-@keyframes fadeInDown{ from{ opacity: 0; transform: translateY(-14px); } to{ opacity: 1; transform: translateY(0); } }
-@keyframes floaty{ 0%, 100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
+
+/* Revelado "hacker": el elemento entra recortado por franjas (como si se
+   estuviera descargando/decodificando), con un salto de posición y un
+   destello de brillo, en vez de un simple fundido. */
+@keyframes glitchReveal{
+  0%{ opacity: 0; transform: translateY(14px); clip-path: inset(0 0 100% 0); filter: brightness(2) blur(2px); }
+  8%{ opacity: 1; clip-path: inset(0 0 62% 0); transform: translate(-4px, 10px); }
+  13%{ clip-path: inset(24% 0 0 0); transform: translate(4px, 4px); }
+  18%{ clip-path: inset(0 0 34% 0); transform: translate(-3px, 0); }
+  24%{ clip-path: inset(0); transform: translate(0,0); filter: none; }
+  100%{ opacity: 1; clip-path: inset(0); transform: translateY(0); filter: none; }
+}
+
+/* Idle del anillo principal: flota suavemente y, a mitad de ciclo, sufre
+   un pequeño "salto" de señal (glitch) — nunca queda del todo estático. */
+@keyframes floaty{
+  0%, 100%{ transform: translateY(0) skewX(0deg); filter: none; }
+  46%{ transform: translateY(-6px) skewX(0deg); filter: none; }
+  50%{ transform: translateY(-6px) skewX(-1.5deg); filter: hue-rotate(12deg); }
+  52%{ transform: translateY(-5px) skewX(1.5deg); filter: hue-rotate(-12deg); }
+  54%{ transform: translateY(-6px) skewX(0deg); filter: none; }
+}
+
 @keyframes spin{ to{ transform: rotate(360deg); } }
 @keyframes blink{ 50%{ opacity: 0.15; } }
+
+/* Cambio de dígito estilo terminal: salto de posición + separación RGB
+   (cromática) + destello de brillo, en vez de un simple "pop" suave. */
 @keyframes numPulse{
-  0%{ transform: scale(1); text-shadow: 0 0 18px rgba(var(--cyan-rgb),0.35); }
-  35%{ transform: scale(1.18); text-shadow: 0 0 30px rgba(var(--cyan-soft-rgb),0.9); }
-  100%{ transform: scale(1); text-shadow: 0 0 18px rgba(var(--cyan-rgb),0.35); }
+  0%{ transform: translateY(0); text-shadow: 0 0 18px rgba(var(--cyan-rgb),0.35); filter: none; }
+  20%{ transform: translateY(-2px); text-shadow: 2px 0 0 rgba(255,0,80,0.8), -2px 0 0 rgba(0,255,255,0.8); filter: brightness(1.6); }
+  45%{ transform: translateY(1px); text-shadow: -2px 0 0 rgba(255,0,80,0.6), 2px 0 0 rgba(0,255,255,0.6); filter: none; }
+  70%{ transform: translateY(0); text-shadow: 0 0 30px rgba(var(--cyan-soft-rgb),0.9); }
+  100%{ transform: translateY(0); text-shadow: 0 0 18px rgba(var(--cyan-rgb),0.35); }
 }
 @keyframes numPulseGray{
-  0%{ transform: scale(1); }
-  35%{ transform: scale(1.15); color: var(--cyan-soft); }
-  100%{ transform: scale(1); }
+  0%{ transform: translateY(0); color: var(--gray); filter: none; }
+  25%{ transform: translateY(-2px); color: var(--cyan-soft); filter: brightness(1.4); }
+  50%{ transform: translateY(1px); text-shadow: 1px 0 0 rgba(255,0,80,0.5), -1px 0 0 rgba(0,255,255,0.5); }
+  100%{ transform: translateY(0); color: var(--gray); filter: none; text-shadow: none; }
 }
 @keyframes dotPulse{ 0%, 100%{ opacity: 1; } 50%{ opacity: 0.4; } }
+
+/* Anillo expansivo tipo radar/sonar alrededor de los puntos "en curso" */
+@keyframes radarPing{
+  0%{ transform: scale(0.6); opacity: 0.8; }
+  100%{ transform: scale(2.6); opacity: 0; }
+}
+
 @keyframes glowPulse{
   0%, 100%{ filter: drop-shadow(0 0 4px rgba(var(--cyan-rgb),0.4)); }
   50%{ filter: drop-shadow(0 0 16px rgba(var(--cyan-rgb),0.8)); }
+}
+
+/* Parpadeo sutil tipo CRT en las scanlines */
+@keyframes scanFlicker{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0.85; }
+  75%{ opacity: 0.95; }
+}
+
+/* Brillo tipo "shimmer" recorriendo la pastilla del switch de usuario */
+@keyframes shimmer{
+  0%{ left: -60%; }
+  60%, 100%{ left: 120%; }
 }
 
 /* -------------------- Responsive -------------------- */

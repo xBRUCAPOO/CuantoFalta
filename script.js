@@ -26,33 +26,12 @@
      de las planillas que pasaste. Quedan tal cual figuran en las fotos
      (con algún horario redondeado donde la planilla tenía una
      superposición rara) — cualquier detalle se corrige a mano después.
-
-     El bloque "0" (Domingo) de cada usuario es un horario DE PRUEBA
-     (materias inventadas) solo para poder ver la app funcionando un
-     domingo. Se puede borrar sin problema cuando ya no haga falta.
   ----------------------------------------------------------------- */
 
   const USUARIOS = {
 
     // =================== BRUCA (5D) ===================
     bruca: {
-      0: { // Domingo — SOLO DE PRUEBA, borrar cuando ya no se necesite testear
-        inicio: "13:20",
-        salida: "20:55",
-        recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
-        ],
-        materias: [
-          { nombre: "[PRUEBA] Materia 1", inicio: "13:20", fin: "14:50" },
-          { nombre: "[PRUEBA] Materia 2", inicio: "14:55", fin: "16:15" },
-          { nombre: "[PRUEBA] Materia 3", inicio: "16:25", fin: "17:45" },
-          { nombre: "[PRUEBA] Materia 4", inicio: "17:55", fin: "19:05" },
-          { nombre: "[PRUEBA] Materia 5", inicio: "19:10", fin: "20:55" },
-        ],
-      },
       1: { // Lunes
         inicio: "08:55",
         salida: "20:55",
@@ -135,19 +114,6 @@
 
     // =================== MELY (6° Economía T.T.) ===================
     mely: {
-      0: { // Domingo — SOLO DE PRUEBA, borrar cuando ya no se necesite testear
-        inicio: "13:00",
-        salida: "19:40",
-        recreos: [
-          { nombre: "Recreo 1", inicio: "15:00", fin: "15:15" },
-          { nombre: "Recreo 2", inicio: "17:10", fin: "17:15" },
-        ],
-        materias: [
-          { nombre: "[PRUEBA] Materia 1", inicio: "13:00", fin: "15:00" },
-          { nombre: "[PRUEBA] Materia 2", inicio: "15:15", fin: "17:10" },
-          { nombre: "[PRUEBA] Materia 3", inicio: "17:15", fin: "19:40" },
-        ],
-      },
       1: { // Lunes
         inicio: "13:00",
         salida: "19:40",
@@ -591,7 +557,13 @@
 
   function actualizarPanelMaterias(infoMateria, ahora) {
     if (infoMateria.tipo === "en_clase") {
-      if (estadoMateriaAnterior !== infoMateria.actual.nombre) sonarCambioDeMateria();
+      if (estadoMateriaAnterior !== infoMateria.actual.nombre) {
+        sonarCambioDeMateria();
+        // Destello visual breve en el panel para reforzar el cambio de materia
+        el.subjectPanel.classList.remove("flash");
+        void el.subjectPanel.offsetWidth; // fuerza reflow para reiniciar la animación
+        el.subjectPanel.classList.add("flash");
+      }
       estadoMateriaAnterior = infoMateria.actual.nombre;
 
       el.subjectPanel.classList.add("is-active");
@@ -741,9 +713,9 @@
     actualizarFecha(ahora);
     actualizarReloj(ahora);
 
-    // Ya no se asume "sin clase" por ser sábado/domingo: cada día se rige
-    // únicamente por si USUARIOS tiene o no una clave configurada para él
-    // (esto permite, por ejemplo, tener un horario de prueba los domingos).
+    // "Sin clase" se decide únicamente por si USUARIOS tiene o no una
+    // clave configurada para el día de hoy (0=Domingo, 6=Sábado incluidos:
+    // si no hay clave, se muestra "Hoy no hay clases." automáticamente).
     const horario = cargarHorarioDelDia(ahora);
     if (!horario) {
       document.body.classList.remove("state-ended");
@@ -789,17 +761,20 @@
      18) FONDO ANIMADO: partículas tipo constelación
      Los colores se leen desde las variables CSS del usuario activo,
      así que el fondo cambia de tono automáticamente al cambiar de tema.
+     Efecto: los puntos titilan y se conectan con líneas delgadas del
+     color de acento del usuario cuando están cerca entre sí, y también
+     se conectan hacia el mouse/dedo cuando está cerca (efecto radar/HUD).
   ----------------------------------------------------------------- */
 
   let colorLinea = "rgba(91, 231, 255, ALPHA)";
-  let colorPunto = "rgba(62, 115, 215, 0.55)";
+  let colorPunto = "rgba(243, 246, 250, ALPHA)";
 
   function actualizarColoresFondo() {
     const estilos = getComputedStyle(document.documentElement);
     const cyanRgb = estilos.getPropertyValue("--cyan-rgb").trim() || "91, 231, 255";
     const whiteRgb = estilos.getPropertyValue("--white-rgb").trim() || "243, 246, 250";
     colorLinea = `rgba(${cyanRgb}, ALPHA)`;
-    colorPunto = `rgba(${whiteRgb}, 0.45)`;
+    colorPunto = `rgba(${whiteRgb}, ALPHA)`;
   }
 
   function iniciarFondoParticulas() {
@@ -808,8 +783,12 @@
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let ancho, alto, particulas;
-    const DENSIDAD = prefersReduced ? 0 : 0.00009;
+    const DENSIDAD = prefersReduced ? 0 : 0.00011;
     const VELOCIDAD = prefersReduced ? 0 : 0.18;
+    const DIST_MAX = 150;   // distancia máxima para unir dos partículas entre sí
+    const DIST_MOUSE = 220; // distancia máxima para unir una partícula al cursor
+
+    const mouse = { x: -9999, y: -9999, activo: false };
 
     function dimensionar() {
       ancho = canvas.width = window.innerWidth;
@@ -821,12 +800,12 @@
         vx: (Math.random() - 0.5) * VELOCIDAD,
         vy: (Math.random() - 0.5) * VELOCIDAD,
         r: 0.6 + Math.random() * 1.4,
+        fase: Math.random() * Math.PI * 2, // desfasaje para que titilen de forma independiente
       }));
     }
 
-    function paso() {
+    function paso(tiempo) {
       ctx.clearRect(0, 0, ancho, alto);
-      const DIST_MAX = 130;
 
       for (const p of particulas) {
         p.x += p.vx;
@@ -835,14 +814,17 @@
         if (p.y < 0 || p.y > alto) p.vy *= -1;
       }
 
+      // Líneas entre partículas cercanas + halo (glow) del color del usuario
       ctx.lineWidth = 1;
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = colorLinea.replace("ALPHA", "0.6");
       for (let i = 0; i < particulas.length; i++) {
         for (let j = i + 1; j < particulas.length; j++) {
           const a = particulas[i], b = particulas[j];
           const dx = a.x - b.x, dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < DIST_MAX) {
-            const op = (1 - dist / DIST_MAX) * 0.12;
+            const op = (1 - dist / DIST_MAX) * 0.22;
             ctx.strokeStyle = colorLinea.replace("ALPHA", op.toFixed(3));
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -850,17 +832,42 @@
             ctx.stroke();
           }
         }
-      }
 
+        // La red "reacciona" cuando hay mouse/dedo cerca
+        if (mouse.activo) {
+          const dxm = particulas[i].x - mouse.x;
+          const dym = particulas[i].y - mouse.y;
+          const distm = Math.sqrt(dxm * dxm + dym * dym);
+          if (distm < DIST_MOUSE) {
+            const opm = (1 - distm / DIST_MOUSE) * 0.5;
+            ctx.strokeStyle = colorLinea.replace("ALPHA", opm.toFixed(3));
+            ctx.beginPath();
+            ctx.moveTo(particulas[i].x, particulas[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.shadowBlur = 0;
+
+      // Puntos con titileo suave (efecto "constelación viva")
       for (const p of particulas) {
+        const titileo = 0.35 + 0.25 * Math.sin(tiempo * 0.0015 + p.fase);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = colorPunto;
+        ctx.fillStyle = colorPunto.replace("ALPHA", titileo.toFixed(2));
         ctx.fill();
       }
 
       requestAnimationFrame(paso);
     }
+
+    window.addEventListener("pointermove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.activo = true;
+    });
+    window.addEventListener("pointerleave", () => { mouse.activo = false; });
 
     dimensionar();
     window.addEventListener("resize", dimensionar);
