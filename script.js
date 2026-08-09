@@ -36,11 +36,9 @@
           { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Matemática",         inicio: "13:20", fin: "14:50" },
+          { nombre: "Inglés",         inicio: "13:20", fin: "14:50" },
           { nombre: "Física",             inicio: "14:55", fin: "16:15" },
           { nombre: "Programación",       inicio: "16:25", fin: "17:45" },
-          { nombre: "Inglés",             inicio: "17:55", fin: "19:05" },
-          { nombre: "Historia",           inicio: "19:10", fin: "20:55" },
         ],
       },
       2: { // Martes
@@ -103,23 +101,6 @@
           { nombre: "Matemática",         inicio: "13:20", fin: "14:50" },
           { nombre: "Programación",       inicio: "14:55", fin: "16:15" },
           { nombre: "Educación Física",   inicio: "16:25", fin: "17:05" },
-        ],
-      },
-      6: { // Testing
-        inicio: "13:20",
-        salida: "20:55",
-        recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
-        ],
-        materias: [
-          { nombre: "Física",             inicio: "13:20", fin: "14:50" },
-          { nombre: "Inglés",             inicio: "14:55", fin: "16:15" },
-          { nombre: "Historia",           inicio: "16:25", fin: "17:45" },
-          { nombre: "Química",            inicio: "17:55", fin: "19:05" },
-          { nombre: "Literatura",         inicio: "19:10", fin: "21:55" },
         ],
       },
     },
