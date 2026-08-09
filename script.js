@@ -12,178 +12,214 @@
   /* -----------------------------------------------------------------
      1) CONFIGURACIÓN DE HORARIOS POR USUARIO
      Editar esta sección para adaptar la app a cada alumno/escuela.
-     Claves de día: 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves, 5=Viernes.
+     Claves de día: 0=Domingo, 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves,
+     5=Viernes, 6=Sábado. Si un día no tiene clave, la app muestra
+     "Hoy no hay clases." automáticamente para ese día.
      "inicio"  = hora de entrada (referencia para el anillo de progreso).
      "salida"  = hora de fin de jornada.
      "recreos" = lista ordenada de recreos del día.
-     "materias" = lista ordenada de bloques de clase del día. Los
-       horarios de las materias NO deben superponerse con los recreos.
-     Las materias de abajo son INVENTADAS a modo de ejemplo: reemplazar
-     "nombre" por las materias reales de cada alumno.
+     "materias" = lista ordenada de bloques de clase del día. Cada bloque
+       representa una materia "de punta a punta" (aunque en el medio
+       haya un recreo corto, que se muestra aparte en su propio panel).
+
+     Horarios de Bruca (curso 5D) y Mely (6° Economía) cargados a partir
+     de las planillas que pasaste. Quedan tal cual figuran en las fotos
+     (con algún horario redondeado donde la planilla tenía una
+     superposición rara) — cualquier detalle se corrige a mano después.
+
+     El bloque "0" (Domingo) de cada usuario es un horario DE PRUEBA
+     (materias inventadas) solo para poder ver la app funcionando un
+     domingo. Se puede borrar sin problema cuando ya no haga falta.
   ----------------------------------------------------------------- */
 
   const USUARIOS = {
 
-    // =================== BRUCA ===================
+    // =================== BRUCA (6E) ===================
     bruca: {
+      0: { // Domingo — SOLO DE PRUEBA, borrar cuando ya no se necesite testear
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "[PRUEBA] Materia 1", inicio: "13:20", fin: "14:50" },
+          { nombre: "[PRUEBA] Materia 2", inicio: "14:55", fin: "16:15" },
+          { nombre: "[PRUEBA] Materia 3", inicio: "16:25", fin: "17:45" },
+          { nombre: "[PRUEBA] Materia 4", inicio: "17:55", fin: "19:05" },
+          { nombre: "[PRUEBA] Materia 5", inicio: "19:10", fin: "20:55" },
+        ],
+      },
       1: { // Lunes
         inicio: "13:20",
         salida: "20:55",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
+          { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Inglés",         inicio: "13:20", fin: "14:50" },
-          { nombre: "Física",             inicio: "14:55", fin: "16:15" },
-          { nombre: "Programación",       inicio: "16:25", fin: "17:45" },
+          { nombre: "Formación",                      inicio: "13:20", fin: "13:30" },
+          { nombre: "Inglés (Balduzzi Noelia)",       inicio: "13:30", fin: "15:35" },
+          { nombre: "Base De Datos I",                inicio: "15:35", fin: "19:45" },
+          { nombre: "Estadística",                    inicio: "19:45", fin: "20:55" },
         ],
       },
       2: { // Martes
-        inicio: "13:20",
+        inicio: "13:30",
         salida: "20:55",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Literatura",         inicio: "13:20", fin: "14:50" },
-          { nombre: "Química",            inicio: "14:55", fin: "16:15" },
-          { nombre: "Matemática",         inicio: "16:25", fin: "17:45" },
-          { nombre: "Educación Física",   inicio: "17:55", fin: "19:05" },
-          { nombre: "Biología",           inicio: "19:10", fin: "20:55" },
+          { nombre: "Formación",                        inicio: "13:20", fin: "13:30" },
+          { nombre: "Lengua (Moya Camila)",             inicio: "13:30", fin: "15:35" },
+          { nombre: "Cuidadanía y Política",            inicio: "15:35", fin: "17:05" },
+          { nombre: "Filosofía (Soncini Agustina)",     inicio: "17:05", fin: "19:05" },
+          { nombre: "Análisis Matemático (Burgos S.)",  inicio: "19:10", fin: "20:55" },
         ],
       },
       3: { // Miércoles (jornada reducida)
-        inicio: "13:20",
+        inicio: "08:55",
         salida: "19:05",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
+          { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
-          { nombre: "Arte",               inicio: "13:20", fin: "14:50" },
-          { nombre: "Programación",       inicio: "14:55", fin: "16:15" },
-          { nombre: "Matemática",         inicio: "16:25", fin: "17:45" },
-          { nombre: "Tutoría",            inicio: "17:55", fin: "19:05" },
+          { nombre: "Formación",            inicio: "13:20", fin: "13:30" },
+          { nombre: "Educación Física",     inicio: "08:55", fin: "10:15" },
+          { nombre: "Estadísticas",         inicio: "13:30", fin: "14:50" },
+          { nombre: "Programación III",     inicio: "14:55", fin: "19:05" },
         ],
       },
       4: { // Jueves
-        inicio: "13:20",
+        inicio: "13:30",
         salida: "20:55",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Física",             inicio: "13:20", fin: "14:50" },
-          { nombre: "Inglés",             inicio: "14:55", fin: "16:15" },
-          { nombre: "Historia",           inicio: "16:25", fin: "17:45" },
-          { nombre: "Química",            inicio: "17:55", fin: "19:05" },
-          { nombre: "Literatura",         inicio: "19:10", fin: "20:55" },
+          { nombre: "Formación",                      inicio: "13:20", fin: "13:30" },
+          { nombre: "Economía y Gestión de la Prod. Industrial (Levin N.)", inicio: "13:30", fin: "14:50" },
+          { nombre: "Cuidadanía y Política",                                 inicio: "14:55", fin: "15:35" },
+          { nombre: "Análisis Matemático (Burgos S.)",                      inicio: "15:35", fin: "17:05" },
+          { nombre: "Sistemas y Telecomunicaciones (Choque P.)",            inicio: "17:05", fin: "20:55" },
         ],
       },
       5: { // Viernes (jornada reducida)
-        inicio: "13:20",
-        salida: "17:05",
+        inicio: "13:30",
+        salida: "18:30",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
-          { nombre: "Matemática",         inicio: "13:20", fin: "14:50" },
-          { nombre: "Programación",       inicio: "14:55", fin: "16:15" },
-          { nombre: "Educación Física",   inicio: "16:25", fin: "17:05" },
+          { nombre: "Formación",                                                inicio: "13:20", fin: "13:30" },
+          { nombre: "Recursos Humanos (Oviedo Ivana)",                          inicio: "13:30", fin: "15:35" },
+          { nombre: "Ed. Artística Teatro",                                     inicio: "15:35", fin: "17:05" },
+          { nombre: "Economía y Gestión de la Prod. Industrial (Nancy)",        inicio: "17:05", fin: "18:30" },
         ],
       },
     },
 
-    // =================== MELY ===================
+    // =================== MELY (6° Economía T.T.) ===================
     mely: {
-      1: { // Lunes
-        inicio: "13:20",
-        salida: "20:55",
+      0: { // Domingo — SOLO DE PRUEBA, borrar cuando ya no se necesite testear
+        inicio: "13:00",
+        salida: "19:40",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo 1", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo 2", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Contabilidad",           inicio: "13:20", fin: "14:50" },
-          { nombre: "Economía",               inicio: "14:55", fin: "16:15" },
-          { nombre: "Inglés",                 inicio: "16:25", fin: "17:45" },
-          { nombre: "Administración",         inicio: "17:55", fin: "19:05" },
-          { nombre: "Marketing",              inicio: "19:10", fin: "20:55" },
+          { nombre: "[PRUEBA] Materia 1", inicio: "13:00", fin: "15:00" },
+          { nombre: "[PRUEBA] Materia 2", inicio: "15:15", fin: "17:10" },
+          { nombre: "[PRUEBA] Materia 3", inicio: "17:15", fin: "19:40" },
+        ],
+      },
+      1: { // Lunes
+        inicio: "13:00",
+        salida: "19:40",
+        recreos: [
+          { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
+        ],
+        materias: [
+          { nombre: "Sist. Inform. Contable (Barrionuevo)", inicio: "13:00", fin: "15:00" },
+          { nombre: "Educación Física (Córdoba)",            inicio: "15:15", fin: "16:25" },
+          { nombre: "Matemática (Sánchez)",                  inicio: "16:25", fin: "17:45" },
+          { nombre: "Administración (Prado)",                inicio: "17:45", fin: "19:40" },
         ],
       },
       2: { // Martes
-        inicio: "13:20",
-        salida: "20:55",
+        inicio: "13:00",
+        salida: "19:40",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Derecho Comercial",      inicio: "13:20", fin: "14:50" },
-          { nombre: "Estadística",            inicio: "14:55", fin: "16:15" },
-          { nombre: "Contabilidad",           inicio: "16:25", fin: "17:45" },
-          { nombre: "Informática",            inicio: "17:55", fin: "19:05" },
-          { nombre: "Psicología Laboral",     inicio: "19:10", fin: "20:55" },
+          { nombre: "Lengua y Literatura",                       inicio: "13:00", fin: "14:20" },
+          { nombre: "Derecho (Sánchez)",                         inicio: "14:20", fin: "16:25" },
+          { nombre: "Form. para la Vida y el Trabajo (Rodríguez)", inicio: "16:25", fin: "18:30" },
+          { nombre: "Química (Rocha)",                           inicio: "18:30", fin: "19:40" },
         ],
       },
       3: { // Miércoles (jornada reducida)
-        inicio: "13:20",
-        salida: "19:05",
+        inicio: "13:00",
+        salida: "19:10",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Ética Profesional",      inicio: "13:20", fin: "14:50" },
-          { nombre: "Marketing",              inicio: "14:55", fin: "16:15" },
-          { nombre: "Administración",         inicio: "16:25", fin: "17:45" },
-          { nombre: "Contabilidad",           inicio: "17:55", fin: "19:05" },
+          { nombre: "Educación Física (Córdoba)", inicio: "13:00", fin: "14:20" },
+          { nombre: "Lengua y Literatura",         inicio: "14:20", fin: "15:45" },
+          { nombre: "Química (Rocha)",             inicio: "15:45", fin: "17:10" },
+          { nombre: "Economía (Rosas)",            inicio: "17:15", fin: "19:10" },
         ],
       },
       4: { // Jueves
-        inicio: "13:20",
-        salida: "20:55",
+        inicio: "13:00",
+        salida: "19:40",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+          { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Economía",               inicio: "13:20", fin: "14:50" },
-          { nombre: "Inglés",                 inicio: "14:55", fin: "16:15" },
-          { nombre: "Derecho Comercial",      inicio: "16:25", fin: "17:45" },
-          { nombre: "Estadística",            inicio: "17:55", fin: "19:05" },
-          { nombre: "Informática",            inicio: "19:10", fin: "20:55" },
+          { nombre: "Matemática (Sánchez)",                 inicio: "13:00", fin: "14:20" },
+          { nombre: "Teatro (Alessio)",                      inicio: "14:20", fin: "16:25" },
+          { nombre: "Adm. de la Producción / ConTIC (Rosas-Rocha)", inicio: "16:25", fin: "17:45" },
+          { nombre: "Inglés (Herrera)",                      inicio: "17:45", fin: "19:40" },
         ],
       },
-      5: { // Viernes (jornada reducida)
-        inicio: "13:20",
-        salida: "17:05",
+      5: { // Viernes
+        inicio: "13:00",
+        salida: "19:40",
         recreos: [
-          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
+          { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
         ],
         materias: [
-          { nombre: "Contabilidad",           inicio: "13:20", fin: "14:50" },
-          { nombre: "Marketing",              inicio: "14:55", fin: "16:15" },
-          { nombre: "Administración",         inicio: "16:25", fin: "17:05" },
+          { nombre: "Filosofía (Mercado)",                          inicio: "13:00", fin: "15:00" },
+          { nombre: "Ciudadanía y Política (Sánchez A.)",            inicio: "15:15", fin: "17:10" },
+          { nombre: "Adm. de la Producción / ConTIC (Rosas-Rocha)",  inicio: "17:15", fin: "17:45" },
+          { nombre: "Sist. Inform. Contable (Barrionuevo)",          inicio: "17:45", fin: "19:40" },
         ],
       },
     },
@@ -675,19 +711,14 @@
     actualizarFecha(ahora);
     actualizarReloj(ahora);
 
-    const diaSemana = ahora.getDay();
-    const esFinDeSemana = diaSemana === 0 || diaSemana === 6;
-
-    if (esFinDeSemana) {
+    // Ya no se asume "sin clase" por ser sábado/domingo: cada día se rige
+    // únicamente por si USUARIOS tiene o no una clave configurada para él
+    // (esto permite, por ejemplo, tener un horario de prueba los domingos).
+    const horario = cargarHorarioDelDia(ahora);
+    if (!horario) {
       document.body.classList.remove("state-ended");
       yaSonoFinJornada = false;
       mostrarMensajesEspeciales("Hoy no hay clases.", "✦");
-      return;
-    }
-
-    const horario = cargarHorarioDelDia(ahora);
-    if (!horario) {
-      mostrarMensajesEspeciales("No hay horario configurado para hoy.", "!");
       return;
     }
 
