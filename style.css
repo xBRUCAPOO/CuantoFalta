@@ -10,9 +10,12 @@
    las que cambian de valor según el usuario seleccionado.
 =================================================================== */
 
-/* Fuentes usadas por ambos temas (Bruca usa Orbitron/Share Tech Mono/Rajdhani,
-   Mely usa Orbitron/Chakra Petch/JetBrains Mono) */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+/* Fuentes usadas por ambos temas. Bruca usa Orbitron/Chakra Petch/Share Tech
+   Mono (Chakra Petch es la tipografía de interfaz que antes tenía Mely).
+   Mely usa Orbitron/Playwrite ID/JetBrains Mono (Playwrite ID es la nueva
+   tipografía de interfaz de Mely). Rajdhani queda importada igual por si
+   se usa en algún lugar suelto del proyecto. */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Playwrite+ID:wght@100..400&display=swap');
 
 :root{
   /* ============================================================
@@ -34,24 +37,24 @@ html[data-user="bruca"]{
   --------------------------------------------------------------- */
   --red:          #e60012; /* Rojo principal de marca Bruca. Es el color de acento: anillo de progreso, reloj, íconos activos, bordes con brillo. */
   --red-bright:   #ff1a2e; /* Rojo brillante/claro. Se usa en textos secundarios con brillo (subtítulo del anillo) y en el segundo stop de los degradados. */
-  --red-dim:      #c81e2f; /* Rojo oscuro pero visible. Bordes del HUD (esquinas, separadores, pista del anillo sin progreso). Antes era casi negro (#8b0000) y se veía apagado; ahora conserva menos brillo que --red pero sigue siendo un rojo bien perceptible. */
+  --red-dim:      #c81e2f; /* Rojo oscuro pero visible. Bordes del HUD (esquinas, separadores, pista del anillo sin progreso). */
   --red-glow:     rgba(230,0,18,0.35); /* Rojo semitransparente. Sombras/resplandores (glow) alrededor de números, ícono especial y botón de sonido activo. */
   --black:        #000000; /* Negro puro. Fondo general de toda la app (<html>, <body>). */
   --black-1:      #0a0a0a; /* Negro casi puro. Fondo elevado nivel 1: paneles semi-transparentes (recreo, materia). */
   --black-2:      #111111; /* Negro con un poco más de luz. Fondo elevado nivel 2: botón de sonido, superficies "flotantes". */
   --black-3:      #1a1a1a; /* Negro gris oscuro. Reservado para superficies con más jerarquía (hover de tarjetas). */
   --black-4:      #222222; /* Negro gris. Reservado para bordes/separadores muy sutiles sobre fondo negro. */
-  --grey:         #5c5c5c; /* Gris medio (antes #333333, muy oscuro y poco legible como texto). Bordes de paneles, barras de progreso vacías y texto del footer. */
-  --grey-light:   #a3a3a3; /* Gris claro (antes #666666). Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), nombre del profesor. */
+  --grey:         #5c5c5c; /* Gris medio. Bordes de paneles, barras de progreso vacías y texto del footer. */
+  --grey-light:   #a3a3a3; /* Gris claro. Textos secundarios: fecha, etiquetas ("Próximo recreo", "h/m/s"), nombre del profesor. */
   --white:        #f0f0f0; /* Blanco hueso. Texto principal de alto contraste: números grandes del contador, mensajes especiales. */
-  --code-keyword: #ff79c6; /* Rosa "keyword" estilo editor de código. No se usa en la UI actual; queda disponible para futuros detalles tipo consola/código. */
-  --code-string:  #f1fa8c; /* Amarillo "string" estilo editor de código. Igual que el anterior, reservado para futuros detalles tipo consola. */
-  --orange:       #b77400; /* Naranja apagado. Reservado para estados de alerta intermedios (ej. "quedan pocos minutos"). */
+  --code-keyword: #ff79c6; /* Rosa "keyword" estilo editor de código. Reservado para futuros detalles tipo consola/código. */
+  --code-string:  #f1fa8c; /* Amarillo "string" estilo editor de código. Reservado para futuros detalles tipo consola. */
+  --orange:       #b77400; /* Naranja apagado. Reservado para estados de alerta intermedios. */
   --green:        #009c22; /* Verde. Color de estado "activo/en curso": punto del recreo cuando está en curso, barra de progreso del recreo activo. */
   --online-green: #00ff88; /* Verde brillante. Glow del estado "en curso" (sombra del punto verde y de la barra activa). */
   --font-mono:    'Share Tech Mono', monospace; /* Tipografía mono estilo terminal. Se usa en el reloj superior y en el pie de página ("SISTEMA ESCOLAR · TIEMPO REAL"). */
   --font-hud:     'Orbitron', sans-serif; /* Tipografía HUD/futurista. Se usa en los números grandes (contador de salida, materia, recreo). */
-  --font-body:    'Rajdhani', sans-serif; /* Tipografía de texto general. Se usa en etiquetas, subtítulos y textos del cuerpo. */
+  --font-body:    'Chakra Petch', sans-serif; /* Tipografía de texto general. ANTES era 'Rajdhani' (la propia de Bruca); ahora es 'Chakra Petch', que es la que usaba Mely, según lo pedido. Se usa en etiquetas, subtítulos y textos del cuerpo (incluye el texto de los botones del switch de usuario). */
 
   /* ---------------------------------------------------------------
      2) MAPEO A VARIABLES FUNCIONALES
@@ -64,11 +67,6 @@ html[data-user="bruca"]{
   --cyan:        var(--red);         /* Color de acento principal: anillo de progreso, reloj digital, unidad "h/m/s" del contador principal. */
   --cyan-soft:   var(--red-bright);  /* Acento claro: subtítulo del anillo ("Tiempo para salir…"), ícono de mensajes especiales. */
   --cyan-dim:    var(--red-dim);     /* Acento tenue: pista del anillo, esquinas del HUD, separador del footer. */
-  /* --white y --font-mono NO se redeclaran acá: ya están definidas arriba,
-     en la paleta de marca (sección 1), con el mismo nombre. Redeclararlas
-     como var(--white)/var(--font-mono) sería una referencia circular
-     (CSS inválido) y el navegador las descarta, dejando el texto sin
-     color y la tipografía sin aplicar. Por eso el bug que viste. */
   --gray:        var(--grey-light);  /* Texto secundario: fecha, etiquetas, unidades pequeñas (h/m/s del recreo/materia). */
   --gray-dim:    var(--grey);        /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--online-green);/* Color de "estado activo": punto y barra cuando el recreo está en curso (en Bruca es verde tipo "online"). */
@@ -82,9 +80,9 @@ html[data-user="bruca"]{
      la opacidad de brillos, líneas de scanlines y partículas de fondo
      sin tener que declarar una variable nueva por cada opacidad.
   --------------------------------------------------------------- */
-  --cyan-rgb:      230, 0, 18;    /* Componentes RGB de --cyan (rojo). Glow del reloj, del anillo y de los números al cambiar. */
+  --cyan-rgb:      230, 0, 18;    /* Componentes RGB de --cyan (rojo). Glow del reloj, del anillo y de los números al cambiar. También colorea los puntos y líneas del fondo animado. */
   --cyan-soft-rgb: 255, 26, 46;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números y en glowPulse. */
-  --white-rgb:     240, 240, 240; /* Componentes RGB de --white. Puntos/líneas del fondo animado de partículas. */
+  --white-rgb:     240, 240, 240; /* Componentes RGB de --white. Reservado para textos/detalles que necesiten blanco puro con alpha variable. */
   --violet-rgb:    0, 255, 136;   /* Componentes RGB de --violet. Glow del panel de recreo cuando está activo. */
 }
 
@@ -152,21 +150,29 @@ html:not([data-user]){
   --gray:        var(--color-texto-secundario);  /* Texto secundario: fecha, etiquetas, unidades pequeñas. */
   --gray-dim:    var(--color-texto-apagado);     /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--color-principal-activo);  /* Color de "estado activo": punto y barra cuando el recreo está en curso. */
-  --end:         #ff2d55; /* Color de alerta de fin de jornada. No estaba en la paleta original de Mely; se agrega como acento rojo de aviso (reservado para estados "urgentes"). */
-  --font-display:'Orbitron', sans-serif;    /* Tipografía de números grandes (contador de salida, recreo, materia). */
-  --font-ui:     'Chakra Petch', sans-serif; /* Tipografía de interfaz: etiquetas, botones, textos de estado. */
-  --font-mono:   'JetBrains Mono', monospace; /* Tipografía del reloj digital y del pie de página. */
+  --end:         #ff2d55; /* Color de alerta de fin de jornada. Acento rojo de aviso (reservado para estados "urgentes"). */
+  --font-display:'Playwrite ID', cursive;    /* Tipografía de números grandes (contador de salida, recreo, materia). ANTES era 'Orbitron'; ahora 'Playwrite ID' en TODO el tema Mely, según lo pedido. */
+  --font-ui:     'Playwrite ID', cursive; /* Tipografía de interfaz de Mely: etiquetas, botones (incluido el texto del switch de usuario) y textos de estado. */
+  --font-mono:   'Playwrite ID', cursive; /* Tipografía del reloj digital y del pie de página. ANTES era 'JetBrains Mono'; ahora también 'Playwrite ID' para que TODO el usuario Mely use la misma tipografía. */
 
   /* ---------------------------------------------------------------
      3) COMPONENTES RGB (sin alpha) PARA SOMBRAS/GLOWS/PARTÍCULAS
   --------------------------------------------------------------- */
-  --cyan-rgb:      0, 1, 128;     /* Componentes RGB de --cyan (azul). Glow del reloj, del anillo y de los números al cambiar. */
+  --cyan-rgb:      0, 1, 128;     /* Componentes RGB de --cyan (azul). Glow del reloj, del anillo y de los números al cambiar. También colorea los puntos y líneas del fondo animado. */
   --cyan-soft-rgb: 27, 47, 191;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números y en glowPulse. */
-  --white-rgb:     232, 238, 255; /* Componentes RGB de --white. Puntos/líneas del fondo animado de partículas. */
+  --white-rgb:     232, 238, 255; /* Componentes RGB de --white. Reservado para textos/detalles que necesiten blanco puro con alpha variable. */
   --violet-rgb:    50, 72, 230;   /* Componentes RGB de --violet. Glow del panel de recreo/materia cuando está activo. */
 }
 
-*{ box-sizing: border-box; }
+*{
+  box-sizing: border-box;
+  /* Saca el recuadro/flash celeste que Chrome Android y otros navegadores
+     móviles pintan por defecto al tocar cualquier elemento (botones,
+     links, etc.). Sin esto, cada tap sobre el switch de usuario o el
+     botón de sonido mostraba ese destello celeste ajeno a la paleta. */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
 
 [hidden]{ display: none !important; }
 
@@ -292,6 +298,8 @@ body{
   border-radius: 999px;
   cursor: pointer;
   transition: color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .user-switch .user-btn:hover{ color: var(--white); }
@@ -323,6 +331,8 @@ body{
   justify-content: center;
   cursor: pointer;
   transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 .sound-toggle:hover{ border-color: var(--cyan-dim); color: var(--cyan); }
 .sound-toggle:focus-visible{
@@ -732,10 +742,6 @@ body.state-ended .ring-progress{ stroke: url(#ringGrad); opacity: 0.25; }
 body.state-ended .clock{ color: var(--gray); text-shadow: none; }
 
 /* -------------------- Estado: quedan pocos minutos para salir -------------------- */
-/* Se activa por JS (body.state-urgent) cuando faltan 5 minutos o menos.
-   Intensifica el brillo del anillo y tiñe los números de rojo/alerta con
-   un parpadeo tipo terminal, sin todavía tapar el resto de la interfaz
-   (eso ya lo hace la cuenta final de los últimos 15s, más abajo). */
 
 body.state-urgent .ring-progress{
   animation: urgentRingPulse 1s ease-in-out infinite;
@@ -747,18 +753,12 @@ body.state-urgent .big-time .num{
 body.state-urgent .exit-status{ color: var(--end); }
 
 /* -------------------- Efecto "glitch" reutilizable -------------------- */
-/* Se dispara por JS agregando esta clase (con un reflow forzado) cada vez
-   que cambia la materia mostrada o aparece el nombre de un profesor
-   nuevo, para dar ese aire hacker/cyberpunk de "texto decodificándose". */
 
 .glitch-in{
   animation: textGlitch 0.4s steps(2, end) both;
 }
 
 /* -------------------- Cuenta regresiva final (últimos 15s) -------------------- */
-/* Reemplaza visualmente TODA la interfaz (menos el switch de usuario) por
-   un contador gigante de segundos.milisegundos. Se activa/desactiva por JS
-   agregando body.countdown-final, que oculta .app y el botón de sonido. */
 
 body.countdown-final .app{
   opacity: 0;
@@ -926,6 +926,43 @@ body.countdown-final .sound-toggle{
 }
 
 @keyframes screenFlash{ from{ opacity: 0.85; } to{ opacity: 0; } }
+
+/* -------------------- Ajuste de tamaño para Mely (Playwrite ID) -------------------- */
+/* Playwrite ID es una tipografía cursiva/manuscrita (los trazos de las
+   letras se conectan entre sí, a diferencia de Orbitron o Chakra Petch),
+   así que a los mismos tamaños se ve apretada y las letras parecen
+   superponerse. Este bloque reduce (a mano, elemento por elemento) los
+   tamaños de fuente SOLO cuando el usuario activo es Mely, sin tocar en
+   absoluto los tamaños de Bruca. Los valores mínimos de cada clamp() están
+   pensados para el ancho de pantalla real (en píxeles CSS, no físicos) de
+   los dos equipos donde se va a usar la app: un Moto G72 y un Samsung A56,
+   ambos con un viewport de aproximadamente 360-412px de ancho — en ese
+   rango, el valor que termina aplicándose casi siempre es el mínimo del
+   clamp(), así que ese es el número que más importa acá.
+   La especificidad de estos selectores (con el atributo html[data-user="mely"]
+   agregado) es mayor que la de las reglas originales de arriba, así que no
+   importa el orden: siempre ganan estas versiones más chicas para Mely. */
+
+html[data-user="mely"] .date{ font-size: clamp(0.5rem, 1.1vw, 0.68rem); }
+html[data-user="mely"] .clock{ font-size: clamp(0.95rem, 2.6vw, 1.4rem); }
+html[data-user="mely"] .eyebrow{ font-size: clamp(0.48rem, 1.05vw, 0.6rem); }
+html[data-user="mely"] .big-time .num{ font-size: clamp(1.4rem, 6vw, 2.4rem); }
+html[data-user="mely"] .big-time .unit-label{ font-size: clamp(0.55rem, 1.3vw, 0.7rem); }
+html[data-user="mely"] .sub-status{ font-size: clamp(0.5rem, 1.1vw, 0.6rem); }
+html[data-user="mely"] .recess-label{ font-size: clamp(0.5rem, 1.2vw, 0.6rem); }
+html[data-user="mely"] .small-time{ font-size: clamp(0.68rem, 2.3vw, 0.95rem); }
+html[data-user="mely"] .subject-status{ font-size: clamp(0.5rem, 1.2vw, 0.6rem); }
+html[data-user="mely"] .subject-name{ font-size: clamp(0.7rem, 2.3vw, 0.95rem); }
+html[data-user="mely"] .subject-teacher{ font-size: clamp(0.46rem, 1.1vw, 0.55rem); }
+html[data-user="mely"] .subject-time{ font-size: clamp(0.68rem, 2.3vw, 0.95rem); }
+html[data-user="mely"] .subject-next,
+html[data-user="mely"] .subject-remaining{ font-size: clamp(0.47rem, 1.1vw, 0.55rem); }
+html[data-user="mely"] .special-icon{ font-size: clamp(1.1rem, 3.4vw, 1.65rem); }
+html[data-user="mely"] .special-text{ font-size: clamp(0.7rem, 2.3vw, 1.05rem); }
+html[data-user="mely"] .footer{ font-size: clamp(0.42rem, 0.95vw, 0.48rem); }
+html[data-user="mely"] .user-switch .user-btn{ font-size: clamp(0.46rem, 1.1vw, 0.55rem); }
+html[data-user="mely"] .final-countdown-label{ font-size: clamp(0.5rem, 1.5vw, 0.72rem); }
+html[data-user="mely"] .final-countdown-time{ font-size: clamp(3.1rem, 17vw, 8.2rem); }
 
 /* -------------------- Responsive -------------------- */
 

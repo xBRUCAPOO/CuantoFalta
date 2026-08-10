@@ -26,10 +26,6 @@
      de las planillas que pasaste. Quedan tal cual figuran en las fotos
      (con algún horario redondeado donde la planilla tenía una
      superposición rara) — cualquier detalle se corrige a mano después.
-
-     El bloque "0" (Domingo) de cada usuario es un horario DE PRUEBA
-     (materias inventadas) solo para poder ver la app funcionando un
-     domingo. Se puede borrar sin problema cuando ya no haga falta.
   ----------------------------------------------------------------- */
 
   const USUARIOS = {
@@ -38,7 +34,7 @@
     bruca: {
       1: { // Lunes
         inicio: "08:55",
-        salida: "0:100",
+        salida: "20:55",
         recreos: [
           { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
@@ -894,18 +890,21 @@
   /* -----------------------------------------------------------------
      18) FONDO ANIMADO: partículas tipo constelación
      Los colores se leen desde las variables CSS del usuario activo,
-     así que el fondo cambia de tono automáticamente al cambiar de tema.
+     así que el fondo cambia de tono automáticamente al cambiar de tema:
+     tanto las LÍNEAS que conectan partículas cercanas como los PUNTOS
+     ahora usan --cyan-rgb (el color de acento de Bruca/Mely), en vez de
+     blanco fijo, para que todo el fondo se sienta "del color" del
+     usuario activo.
   ----------------------------------------------------------------- */
 
   let colorLinea = "rgba(91, 231, 255, ALPHA)";
-  let colorPunto = "rgba(62, 115, 215, 0.55)";
+  let colorPunto = "rgba(91, 231, 255, ALPHA)";
 
   function actualizarColoresFondo() {
     const estilos = getComputedStyle(document.documentElement);
     const cyanRgb = estilos.getPropertyValue("--cyan-rgb").trim() || "91, 231, 255";
-    const whiteRgb = estilos.getPropertyValue("--white-rgb").trim() || "243, 246, 250";
     colorLinea = `rgba(${cyanRgb}, ALPHA)`;
-    colorPunto = `rgba(${whiteRgb}, 0.45)`;
+    colorPunto = `rgba(${cyanRgb}, ALPHA)`;
   }
 
   function iniciarFondoParticulas() {
@@ -963,7 +962,10 @@
       for (const p of particulas) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = colorPunto;
+        // Los puntos también usan el color de acento del usuario (antes
+        // eran blancos fijos), con un poco más de opacidad que las
+        // líneas para que se destaquen como "nodos" de la constelación.
+        ctx.fillStyle = colorPunto.replace("ALPHA", "0.65");
         ctx.fill();
       }
 
