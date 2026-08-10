@@ -1,61 +1,37 @@
-/* ===================================================================
-   ¿CUÁNTO FALTA? — Lógica
-   Toda la configuración de horarios vive en USUARIOS, un objeto con
-   una clave por usuario ("bruca" y "mely"). Cada usuario tiene su
-   propio horario de entrada/salida, recreos y MATERIAS por día.
-   No requiere build ni dependencias externas.
-=================================================================== */
-
 (() => {
   "use strict";
 
   /* -----------------------------------------------------------------
      1) CONFIGURACIÓN DE HORARIOS POR USUARIO
-     Editar esta sección para adaptar la app a cada alumno/escuela.
-     Claves de día: 0=Domingo, 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves,
-     5=Viernes, 6=Sábado. Si un día no tiene clave, la app muestra
-     "Hoy no hay clases." automáticamente para ese día.
-     "inicio"  = hora de entrada (referencia para el anillo de progreso).
-     "salida"  = hora de fin de jornada.
-     "recreos" = lista ordenada de recreos del día.
-     "materias" = lista ordenada de bloques de clase del día. Cada bloque
-       representa una materia "de punta a punta" (aunque en el medio
-       haya un recreo corto, que se muestra aparte en su propio panel).
-
-     Horarios de Bruca (curso 5D) y Mely (6° Economía) cargados a partir
-     de las planillas que pasaste. Quedan tal cual figuran en las fotos
-     (con algún horario redondeado donde la planilla tenía una
-     superposición rara) — cualquier detalle se corrige a mano después.
   ----------------------------------------------------------------- */
 
   const USUARIOS = {
 
-    // =================== BRUCA (5D) ===================
+    // =================== BRUCA (6E) ===================
     bruca: {
       1: { // Lunes
-        inicio: "08:55",
-        salida: "20:55",
+        inicio: "10:30",
+        salida: "11:30",
         recreos: [
-          { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
-          { nombre: "Educación Física",  inicio: "08:55", fin: "10:15" },
+          { nombre: "Educación Física",  inicio: "10:30", fin: "11:30" },
           { nombre: "Inglés",            profesor: "Balduzzi Noelia", inicio: "13:30", fin: "15:35" },
           { nombre: "Base De Datos I",   inicio: "15:35", fin: "19:45" },
           { nombre: "Estadística",       inicio: "19:45", fin: "20:55" },
         ],
       },
       2: { // Martes
-        inicio: "13:30",
+        inicio: "13:20",
         salida: "20:55",
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
@@ -66,16 +42,15 @@
         ],
       },
       3: { // Miércoles (jornada reducida)
-        inicio: "08:55",
+        inicio: "13:20",
         salida: "19:05",
         recreos: [
-          { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
-          { nombre: "Educación Física", inicio: "08:55", fin: "10:15" },
+          { nombre: "Educación Física", inicio: "10:30", fin: "11:30" },
           { nombre: "Estadísticas",     inicio: "13:30", fin: "14:50" },
           { nombre: "Programación III", inicio: "14:55", fin: "19:05" },
         ],
@@ -86,7 +61,7 @@
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
@@ -102,7 +77,7 @@
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
-          { nombre: "Recreo", inicio: "17:45", fin: "17:55" },
+          { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
           { nombre: "Recursos Humanos",                          profesor: "Oviedo Ivana", inicio: "13:30", fin: "15:35" },
@@ -196,9 +171,6 @@
 
   /* -----------------------------------------------------------------
      2) USUARIO ACTUAL
-     Se guarda en localStorage para recordarlo entre visitas. El valor
-     por defecto es "mely". El <html data-user="..."> ya viene seteado
-     desde un script inline en el <head> del HTML (evita parpadeos).
   ----------------------------------------------------------------- */
 
   function obtenerUsuarioActual() {
@@ -226,9 +198,6 @@
     });
   }
 
-  // Desliza el fondo del switch (".user-switch-thumb") hasta quedar debajo
-  // del botón activo, midiendo su posición/ancho reales en cada llamada
-  // (así funciona sin importar el tamaño de pantalla o el largo del texto).
   function posicionarThumbSwitch() {
     const thumb = document.getElementById("user-switch-thumb");
     const activo = document.querySelector(".user-switch .user-btn.is-active");
@@ -289,7 +258,6 @@
      4) UTILIDADES DE TIEMPO
   ----------------------------------------------------------------- */
 
-  // Convierte "HH:MM" en un objeto Date con la fecha de referencia dada.
   function horaStringADate(horaStr, fechaReferencia) {
     const [h, m] = horaStr.split(":").map(Number);
     const d = new Date(fechaReferencia);
@@ -301,7 +269,6 @@
     return String(Math.max(0, n)).padStart(2, "0");
   }
 
-  // Descompone una cantidad de milisegundos en horas, minutos y segundos.
   function calcularTiempoRestante(ms) {
     const totalSeg = Math.max(0, Math.floor(ms / 1000));
     const h = Math.floor(totalSeg / 3600);
@@ -324,7 +291,6 @@
     return `${diaSemana} ${d.getDate()} de ${mes} de ${d.getFullYear()}`;
   }
 
-  // Carga el horario del día para el usuario actualmente seleccionado.
   function cargarHorarioDelDia(d) {
     const horarioUsuario = USUARIOS[usuarioActual] || {};
     return horarioUsuario[d.getDay()] || null;
@@ -356,10 +322,6 @@
 
   /* -----------------------------------------------------------------
      7) BÚSQUEDA DE LA MATERIA ACTUAL / SIGUIENTE
-     Determina en qué materia estamos (si hay alguna en curso), cuál es
-     la próxima materia (ya sea después de la actual, o la primera del
-     día si todavía no arrancaron las clases) y cuántas materias quedan
-     por cursar hoy (sin contar la que está en curso).
   ----------------------------------------------------------------- */
 
   function buscarMateriaActual(horario, ahora) {
@@ -373,18 +335,14 @@
     const futuras = materias.filter((m) => m.inicioDate > ahora);
 
     if (actual) {
-      // Hay una materia en curso: la "siguiente" es la próxima en el listado.
       const siguiente = futuras[0] || null;
       return { tipo: "en_clase", actual, siguiente, restantes: futuras.length };
     }
 
     if (futuras.length > 0) {
-      // No hay materia en curso (recreo, hueco o todavía no empieza),
-      // pero quedan materias por delante hoy.
       return { tipo: "esperando", actual: null, siguiente: futuras[0], restantes: futuras.length };
     }
 
-    // No hay materia en curso ni materias futuras: terminaron las clases de hoy.
     return { tipo: "sin_materias", actual: null, siguiente: null, restantes: 0 };
   }
 
@@ -400,7 +358,6 @@
       ultimoValor.set(elemento, texto);
       elemento.textContent = texto;
       elemento.classList.remove("pulse");
-      // forzar reflow para reiniciar la animación
       void elemento.offsetWidth;
       elemento.classList.add("pulse");
     }
@@ -500,7 +457,6 @@
     el.ringProgress.style.strokeDasharray = `${RING_CIRC}`;
     el.ringProgress.style.strokeDashoffset = `${RING_CIRC}`;
 
-    // Genera 60 marcas alrededor del anillo
     const frag = document.createDocumentFragment();
     for (let i = 0; i < 60; i++) {
       const angulo = (i / 60) * 360;
@@ -552,8 +508,8 @@
      materia y cantidad de materias que faltan para irnos.
   ----------------------------------------------------------------- */
 
-  let estadoMateriaAnterior = null; // para detectar el cambio de materia y sonar aviso
-  let nombreMostradoAnterior = null; // para disparar el glitch solo cuando cambia lo que se ve en pantalla
+  let estadoMateriaAnterior = null;
+  let nombreMostradoAnterior = null;
 
   function textoRestantes(cantidad) {
     if (cantidad <= 0) return "Es la última materia del día";
@@ -561,9 +517,6 @@
     return `Quedan ${cantidad} materias después de esta`;
   }
 
-  // Dispara el efecto "glitch" (texto que se decodifica) sobre un elemento:
-  // se quita la clase, se fuerza un reflow y se vuelve a poner, para que la
-  // animación se reinicie aunque ya se hubiera reproducido antes.
   function dispararGlitch(elemento) {
     if (!elemento) return;
     elemento.classList.remove("glitch-in");
@@ -571,10 +524,6 @@
     elemento.classList.add("glitch-in");
   }
 
-  // Muestra "Con el profesor/a: [Nombre]" solo si la materia tiene el
-  // campo "profesor" cargado; si no lo tiene, oculta la línea por completo.
-  // Cada vez que aparece un profesor distinto al que estaba mostrado
-  // (o que no había ninguno) dispara el glitch sobre esa línea.
   function mostrarProfesor(materia) {
     const profesorNuevo = materia && materia.profesor ? materia.profesor : "";
     if (profesorNuevo) {
@@ -592,9 +541,6 @@
   }
 
   function actualizarPanelMaterias(infoMateria, ahora) {
-    // Nombre que se está mostrando en este momento (el de la materia en
-    // curso, o el de la siguiente si todavía no empezó): sirve para saber
-    // si hay que disparar el efecto glitch sobre el nombre de la materia.
     const nombreVisible =
       infoMateria.tipo === "en_clase" ? infoMateria.actual.nombre
       : infoMateria.tipo === "esperando" ? infoMateria.siguiente.nombre
@@ -645,7 +591,6 @@
       return;
     }
 
-    // tipo === "sin_materias": no quedan más materias hoy
     estadoMateriaAnterior = "sin_materias";
     el.subjectStatus.textContent = "Sin más clases hoy";
     el.subjectName.textContent = "Esperando la salida";
@@ -662,13 +607,8 @@
      15) CONTADOR SECUNDARIO: próximo recreo / recreo en curso
   ----------------------------------------------------------------- */
 
-  let estadoRecreoAnterior = null; // para detectar transiciones y disparar sonido
+  let estadoRecreoAnterior = null;
 
-  // Convierte la fracción de recreo transcurrida (0 = recién empieza,
-  // 1 = se está por terminar) en un color que va de verde a amarillo,
-  // naranja y rojo. Se usa el modelo HSL: el tono (hue) arranca en 120°
-  // (verde) y baja hasta 0° (rojo), pasando naturalmente por el amarillo
-  // (~60°) y el naranja (~35°) a mitad y tres cuartos de camino.
   function colorSegunRecreoRestante(transcurrido) {
     const t = Math.min(1, Math.max(0, transcurrido));
     const hue = 120 * (1 - t);
@@ -692,16 +632,11 @@
       escribirNumero(el.recessM, m);
       escribirNumero(el.recessS, s);
       el.recessFill.style.width = `${Math.min(100, Math.max(0, transcurrido * 100))}%`;
-      // Color dinámico verde → amarillo → naranja → rojo según lo que
-      // queda de recreo (pisa el degradado cian/violeta del CSS mientras
-      // el recreo está en curso).
       el.recessFill.style.background = colorSegunRecreoRestante(transcurrido);
       return;
     }
 
     el.recessPanel.classList.remove("is-active");
-    // Fuera del recreo en curso, se vuelve a dejar que el color lo
-    // controle el CSS (degradado cian normal / violeta de "próximo").
     el.recessFill.style.background = "";
 
     if (infoRecreo.tipo === "proximo") {
@@ -720,7 +655,6 @@
       return;
     }
 
-    // tipo === "ninguno": no quedan más recreos hoy
     estadoRecreoAnterior = "ninguno";
     el.recessLabel.textContent = "No quedan más recreos hoy";
     escribirNumero(el.recessH, 0);
@@ -741,8 +675,6 @@
     el.specialText.textContent = texto;
     el.specialIcon.textContent = icono;
     if (animarEntrada) {
-      // Reinicia la animación de "estallido" (endBurst) aunque ya se haya
-      // reproducido antes, para la transición justo al terminar la jornada.
       el.specialMessage.classList.remove("is-ending");
       void el.specialMessage.offsetWidth;
       el.specialMessage.classList.add("is-ending");
@@ -757,20 +689,16 @@
 
   /* -----------------------------------------------------------------
      16.1) CUENTA REGRESIVA FINAL (últimos 15 segundos antes de salir)
-     Reemplaza TODA la interfaz (salvo el switch de usuario) por un
-     contador gigante de segundos.milisegundos, actualizado cuadro a
-     cuadro con requestAnimationFrame (el "tick" normal solo corre una
-     vez por segundo y no alcanza para mostrar milisegundos fluidos).
   ----------------------------------------------------------------- */
 
   let cuentaFinalActiva = false;
   let rafFinalId = null;
 
   function iniciarCuentaFinal(horaSalida) {
-    if (cuentaFinalActiva) return; // ya está corriendo, no duplicar el loop
+    if (cuentaFinalActiva) return;
     cuentaFinalActiva = true;
     document.body.classList.add("countdown-final");
-    document.body.classList.remove("state-urgent"); // el overlay reemplaza ese estado
+    document.body.classList.remove("state-urgent");
     el.finalCountdown.hidden = false;
 
     function frame() {
@@ -779,7 +707,7 @@
 
       if (restante <= 0) {
         detenerCuentaFinal();
-        finalizarJornada(); // dispara la transición al toque, sin esperar el próximo tick de 1s
+        finalizarJornada();
         return;
       }
 
@@ -803,9 +731,6 @@
     el.finalCountdown.classList.remove("is-critical");
   }
 
-  // Destello blanco de pantalla completa en el instante justo en que
-  // termina la jornada (se agrega y se elimina solo al terminar su
-  // propia animación CSS).
   function dispararFlashFin() {
     const flash = document.createElement("div");
     flash.className = "end-flash";
@@ -834,9 +759,6 @@
     actualizarFecha(ahora);
     actualizarReloj(ahora);
 
-    // Ya no se asume "sin clase" por ser sábado/domingo: cada día se rige
-    // únicamente por si USUARIOS tiene o no una clave configurada para él
-    // (esto permite, por ejemplo, tener un horario de prueba los domingos).
     const horario = cargarHorarioDelDia(ahora);
     if (!horario) {
       document.body.classList.remove("state-ended", "state-urgent");
@@ -848,6 +770,16 @@
 
     const horaInicio = horaStringADate(horario.inicio, ahora);
     const horaSalida = horaStringADate(horario.salida, ahora);
+
+    // Si la hora actual es menor a la hora de inicio, no mostrar el contador principal
+    if (ahora < horaInicio) {
+      document.body.classList.remove("state-ended", "state-urgent");
+      detenerCuentaFinal();
+      yaSonoFinJornada = false;
+      ocultarMensajesEspeciales();
+      mostrarMensajesEspeciales("Las clases aún no han comenzado.", "◆");
+      return;
+    }
 
     if (ahora >= horaSalida) {
       detenerCuentaFinal();
@@ -867,10 +799,7 @@
     const estadoPrincipal = msHastaSalida < 5 * 60 * 1000 ? "ultimos_minutos" : "normal";
     actualizarContadorPrincipal(msHastaSalida, transcurridoJornada, estadoPrincipal);
 
-    // A partir de los últimos 15 segundos, la cuenta final a pantalla
-    // completa toma el control (ver iniciarCuentaFinal). Entre los 5
-    // minutos y los 15 segundos, solo se intensifica el brillo/color del
-    // anillo y los números (estado "urgente").
+    // A partir de los últimos 15 segundos, la cuenta final a pantalla completa toma el control
     if (msHastaSalida <= 15000) {
       iniciarCuentaFinal(horaSalida);
     } else {
@@ -889,12 +818,6 @@
 
   /* -----------------------------------------------------------------
      18) FONDO ANIMADO: partículas tipo constelación
-     Los colores se leen desde las variables CSS del usuario activo,
-     así que el fondo cambia de tono automáticamente al cambiar de tema:
-     tanto las LÍNEAS que conectan partículas cercanas como los PUNTOS
-     ahora usan --cyan-rgb (el color de acento de Bruca/Mely), en vez de
-     blanco fijo, para que todo el fondo se sienta "del color" del
-     usuario activo.
   ----------------------------------------------------------------- */
 
   let colorLinea = "rgba(91, 231, 255, ALPHA)";
@@ -947,8 +870,6 @@
           const dx = a.x - b.x, dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < DIST_MAX) {
-            // Líneas finas del color de acento del usuario activo (--cyan),
-            // más intensas cuanto más cerca están los puntos entre sí.
             const op = (1 - dist / DIST_MAX) * 0.22;
             ctx.strokeStyle = colorLinea.replace("ALPHA", op.toFixed(3));
             ctx.beginPath();
@@ -962,9 +883,6 @@
       for (const p of particulas) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        // Los puntos también usan el color de acento del usuario (antes
-        // eran blancos fijos), con un poco más de opacidad que las
-        // líneas para que se destaquen como "nodos" de la constelación.
         ctx.fillStyle = colorPunto.replace("ALPHA", "0.65");
         ctx.fill();
       }
