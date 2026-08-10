@@ -20,6 +20,7 @@
         ],
         materias: [
           { nombre: "Educación Física",  inicio: "10:30", fin: "11:30" },
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Inglés",            profesor: "Balduzzi Noelia", inicio: "13:30", fin: "15:35" },
           { nombre: "Base De Datos I",   inicio: "15:35", fin: "19:45" },
           { nombre: "Estadística",       inicio: "19:45", fin: "20:55" },
@@ -35,6 +36,7 @@
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Lengua",               profesor: "Moya Camila",     inicio: "13:30", fin: "15:35" },
           { nombre: "Cuidadanía y Política", inicio: "15:35", fin: "17:05" },
           { nombre: "Filosofía",            profesor: "Soncini Agustina", inicio: "17:05", fin: "19:05" },
@@ -50,6 +52,7 @@
           { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Educación Física", inicio: "10:30", fin: "11:30" },
           { nombre: "Estadísticas",     inicio: "13:30", fin: "14:50" },
           { nombre: "Programación III", inicio: "14:55", fin: "19:05" },
@@ -59,6 +62,7 @@
         inicio: "13:30",
         salida: "20:55",
         recreos: [
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
           { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
@@ -80,6 +84,7 @@
           { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
         ],
         materias: [
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Recursos Humanos",                          profesor: "Oviedo Ivana", inicio: "13:30", fin: "15:35" },
           { nombre: "Ed. Artística Teatro",                      inicio: "15:35", fin: "17:05" },
           { nombre: "Economía y Gestión de la Prod. Industrial", profesor: "Nancy",        inicio: "17:05", fin: "18:30" },
