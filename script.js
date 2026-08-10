@@ -11,7 +11,7 @@
     bruca: {
       1: { // Lunes
         inicio: "10:30",
-        salida: "11:30",
+        salida: "20:55",
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
@@ -44,7 +44,7 @@
         ],
       },
       3: { // Miércoles (jornada reducida)
-        inicio: "13:20",
+        inicio: "10:30",
         salida: "19:05",
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
@@ -59,16 +59,16 @@
         ],
       },
       4: { // Jueves
-        inicio: "13:30",
+        inicio: "13:20",
         salida: "20:55",
         recreos: [
-          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo", inicio: "16:15", fin: "16:25" },
           { nombre: "Bajar la bandera", inicio: "17:45", fin: "17:55" },
           { nombre: "Recreo", inicio: "19:05", fin: "19:10" },
         ],
         materias: [
+          { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
           { nombre: "Economía y Gestión de la Prod. Industrial", profesor: "Levin N.",  inicio: "13:30", fin: "14:50" },
           { nombre: "Cuidadanía y Política",                     inicio: "14:55", fin: "15:35" },
           { nombre: "Análisis Matemático",                       profesor: "Burgos S.", inicio: "15:35", fin: "17:05" },
@@ -76,7 +76,7 @@
         ],
       },
       5: { // Viernes (jornada reducida)
-        inicio: "13:30",
+        inicio: "13:20",
         salida: "18:30",
         recreos: [
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
@@ -630,13 +630,16 @@
 
       const total = infoRecreo.recreo.finDate - infoRecreo.recreo.inicioDate;
       const restante = infoRecreo.recreo.finDate - ahora;
+      // "transcurrido" (0 al empezar el recreo, 1 al terminarlo) se usa para el color
       const transcurrido = 1 - restante / total;
+      // La barra se vacía: 100% al empezar, 0% al terminar
+      const restanteFraccion = total > 0 ? restante / total : 0;
 
       const { h, m, s } = calcularTiempoRestante(restante);
       escribirNumero(el.recessH, h);
       escribirNumero(el.recessM, m);
       escribirNumero(el.recessS, s);
-      el.recessFill.style.width = `${Math.min(100, Math.max(0, transcurrido * 100))}%`;
+      el.recessFill.style.width = `${Math.min(100, Math.max(0, restanteFraccion * 100))}%`;
       el.recessFill.style.background = colorSegunRecreoRestante(transcurrido);
       return;
     }
@@ -648,6 +651,7 @@
       estadoRecreoAnterior = "proximo";
       el.recessLabel.textContent = "Próximo recreo";
 
+      // En clase: la barra se llena (0% → 100%)
       const total = infoRecreo.recreo.inicioDate - infoRecreo.anterior;
       const restante = infoRecreo.recreo.inicioDate - ahora;
       const transcurrido = total > 0 ? 1 - restante / total : 0;
