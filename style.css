@@ -263,6 +263,17 @@ body{
   border: 1px solid var(--gray-dim);
   background: rgba(var(--cyan-rgb), 0.08);
   backdrop-filter: blur(6px);
+  /* Con solo "left" definido (sin "right"), el navegador calculaba el
+     ancho disponible del switch usando nada más la mitad derecha de la
+     pantalla (desde el 50% hasta el borde), así que en teléfonos angostos
+     el contenido no entraba y el corazón de cada botón se iba a una
+     segunda línea, dando ese efecto de texto "encimado". "width: max-content"
+     hace que el switch mida exactamente lo que necesita su contenido, sin
+     esa restricción, y por lo tanto se ensancha horizontalmente en vez de
+     achicar/partir el texto. El max-width es un tope de seguridad para no
+     desbordar del todo la pantalla en un caso extremo. */
+  width: max-content;
+  max-width: 94vw;
 }
 
 /* Fondo que se desliza de un botón al otro. JS calcula su posición/ancho
@@ -300,6 +311,8 @@ body{
   transition: color 0.3s;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .user-switch .user-btn:hover{ color: var(--white); }
