@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
@@ -7,7 +6,7 @@
 <title>CuantoFalta?</title>
 <meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida, el próximo recreo y la materia actual." />
 <link rel="shortcut icon" href="Imgs/CauntoFalta_Reloj.png" type="image/x-icon">
-<link rel="stylesheet" href="style.css?v=3" />
+<link rel="stylesheet" href="style.css?v=2" />
 </head>
 <body>
 
@@ -29,20 +28,15 @@
   <div class="scanlines" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
 
-  <!-- Barra de "escaneo" que cruza la pantalla al cambiar de materia/recreo -->
-  <div class="glitch-sweep" id="glitch-sweep" aria-hidden="true"></div>
-
   <!-- Marco tipo HUD en las esquinas -->
   <span class="corner corner--tl" aria-hidden="true"></span>
   <span class="corner corner--tr" aria-hidden="true"></span>
   <span class="corner corner--bl" aria-hidden="true"></span>
   <span class="corner corner--br" aria-hidden="true"></span>
 
-  <!-- Switch de usuario: cambia la paleta de colores/tipografías y el horario cargado.
-       El "slider" es la pastilla que se desliza fluidamente hacia el usuario activo;
-       su posición y ancho los calcula script.js según el botón seleccionado. -->
+  <!-- Switch de usuario: cambia la paleta de colores/tipografías y el horario cargado -->
   <div class="user-switch" id="user-switch" role="group" aria-label="Seleccionar usuario">
-    <span class="user-switch-slider" id="user-switch-slider" aria-hidden="true"></span>
+    <span class="user-switch-thumb" id="user-switch-thumb" aria-hidden="true"></span>
     <button type="button" class="user-btn" data-user="bruca">♥️ Bruca ❤️</button>
     <button type="button" class="user-btn" data-user="mely">♠️ Mely 💙</button>
   </div>
@@ -59,11 +53,20 @@
     </svg>
   </button>
 
+  <!-- Cuenta regresiva final: se muestra sola (sin el resto de la interfaz)
+       en los últimos 15 segundos antes de la salida -->
+  <div class="final-countdown" id="final-countdown" hidden aria-live="off">
+    <p class="final-countdown-label">Salida en</p>
+    <div class="final-countdown-time">
+      <span id="final-s">15</span><span class="final-sep">.</span><span class="final-ms" id="final-ms">000</span>
+    </div>
+  </div>
+
   <main class="app">
 
     <header class="topbar">
       <p class="date" id="date">—</p>
-      <p class="clock" id="clock"><span class="num" id="clock-h">00</span><span class="colon">:</span><span class="num" id="clock-m">00</span><span class="colon">:</span><span class="num" id="clock-s">00</span></p>
+      <p class="clock" id="clock"><span id="clock-h">00</span><span class="colon">:</span><span id="clock-m">00</span><span class="colon">:</span><span id="clock-s">00</span></p>
     </header>
 
     <section class="stage" id="stage">
@@ -155,20 +158,6 @@
 
   </main>
 
-  <!-- Cuenta regresiva crítica: reemplaza TODA la interfaz en los últimos 15s
-       antes de la salida. Solo queda el número de segundos y milisegundos. -->
-  <div class="critical-countdown" id="critical-countdown" hidden aria-live="off">
-    <p class="critical-label">SALIDA INMINENTE</p>
-    <div class="critical-time">
-      <span class="critical-sec" id="critical-sec">15</span><span class="critical-sep">:</span><span class="critical-ms" id="critical-ms">000</span>
-    </div>
-  </div>
-
-  <!-- Animación final: se dispara una única vez al llegar a 0 -->
-  <div class="finale-overlay" id="finale-overlay" hidden aria-hidden="true">
-    <p class="finale-text" id="finale-text">JORNADA FINALIZADA</p>
-  </div>
-
-<script src="script.js?v=3"></script>
+<script src="script.js?v=2"></script>
 </body>
 </html>

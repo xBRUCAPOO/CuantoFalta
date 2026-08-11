@@ -26,6 +26,10 @@
      de las planillas que pasaste. Quedan tal cual figuran en las fotos
      (con algún horario redondeado donde la planilla tenía una
      superposición rara) — cualquier detalle se corrige a mano después.
+
+     El bloque "0" (Domingo) de cada usuario es un horario DE PRUEBA
+     (materias inventadas) solo para poder ver la app funcionando un
+     domingo. Se puede borrar sin problema cuando ya no haga falta.
   ----------------------------------------------------------------- */
 
   const USUARIOS = {
@@ -34,7 +38,7 @@
     bruca: {
       1: { // Lunes
         inicio: "08:55",
-        salida: "20:55",
+        salida: "21:55",
         recreos: [
           { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
@@ -172,7 +176,7 @@
       },
       5: { // Viernes
         inicio: "13:00",
-        salida: "19:40",
+        salida: "21:40",
         recreos: [
           { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
@@ -213,6 +217,7 @@
     document.documentElement.setAttribute("data-user", usuarioActual);
     try { localStorage.setItem("cf_usuario", usuarioActual); } catch (e) { /* almacenamiento no disponible */ }
     actualizarBotonesUsuario();
+    posicionarThumbSwitch();
     actualizarColoresFondo();
     tick(); // refresca todo inmediatamente con el nuevo horario/paleta
   }
@@ -223,6 +228,17 @@
       btn.classList.toggle("is-active", activo);
       btn.setAttribute("aria-pressed", String(activo));
     });
+  }
+
+  // Desliza el fondo del switch (".user-switch-thumb") hasta quedar debajo
+  // del botón activo, midiendo su posición/ancho reales en cada llamada
+  // (así funciona sin importar el tamaño de pantalla o el largo del texto).
+  function posicionarThumbSwitch() {
+    const thumb = document.getElementById("user-switch-thumb");
+    const activo = document.querySelector(".user-switch .user-btn.is-active");
+    if (!thumb || !activo) return;
+    thumb.style.left = `${activo.offsetLeft}px`;
+    thumb.style.width = `${activo.offsetWidth}px`;
   }
 
   /* -----------------------------------------------------------------
@@ -265,6 +281,10 @@
     specialMessage: document.getElementById("special-message"),
     specialText: document.getElementById("special-text"),
     specialIcon: document.getElementById("special-icon"),
+
+    finalCountdown: document.getElementById("final-countdown"),
+    finalS: document.getElementById("final-s"),
+    finalMs: document.getElementById("final-ms"),
 
     soundToggle: document.getElementById("sound-toggle"),
   };
@@ -455,6 +475,7 @@
     btn.addEventListener("click", () => establecerUsuario(btn.dataset.user));
   });
   actualizarBotonesUsuario();
+  window.addEventListener("resize", posicionarThumbSwitch);
 
   /* -----------------------------------------------------------------
      11) ACTUALIZACIÓN DEL RELOJ Y LA FECHA
@@ -536,6 +557,7 @@
   ----------------------------------------------------------------- */
 
   let estadoMateriaAnterior = null; // para detectar el cambio de materia y sonar aviso
+  let nombreMostradoAnterior = null; // para disparar el glitch solo cuando cambia lo que se ve en pantalla
 
   function textoRestantes(cantidad) {
     if (cantidad <= 0) return "Es la última materia del día";
@@ -543,32 +565,53 @@
     return `Quedan ${cantidad} materias después de esta`;
   }
 
+  // Dispara el efecto "glitch" (texto que se decodifica) sobre un elemento:
+  // se quita la clase, se fuerza un reflow y se vuelve a poner, para que la
+  // animación se reinicie aunque ya se hubiera reproducido antes.
+  function dispararGlitch(elemento) {
+    if (!elemento) return;
+    elemento.classList.remove("glitch-in");
+    void elemento.offsetWidth;
+    elemento.classList.add("glitch-in");
+  }
+
   // Muestra "Con el profesor/a: [Nombre]" solo si la materia tiene el
   // campo "profesor" cargado; si no lo tiene, oculta la línea por completo.
+  // Cada vez que aparece un profesor distinto al que estaba mostrado
+  // (o que no había ninguno) dispara el glitch sobre esa línea.
   function mostrarProfesor(materia) {
-    if (materia && materia.profesor) {
-      el.subjectTeacher.textContent = `Con el profesor/a: ${materia.profesor}`;
-      el.subjectTeacher.hidden = false;
+    const profesorNuevo = materia && materia.profesor ? materia.profesor : "";
+    if (profesorNuevo) {
+      if (el.subjectTeacher.dataset.profesor !== profesorNuevo) {
+        el.subjectTeacher.textContent = `Con el profesor/a: ${profesorNuevo}`;
+        el.subjectTeacher.dataset.profesor = profesorNuevo;
+        el.subjectTeacher.hidden = false;
+        dispararGlitch(el.subjectTeacher);
+      }
     } else {
       el.subjectTeacher.textContent = "";
       el.subjectTeacher.hidden = true;
+      delete el.subjectTeacher.dataset.profesor;
     }
   }
 
   function actualizarPanelMaterias(infoMateria, ahora) {
+    // Nombre que se está mostrando en este momento (el de la materia en
+    // curso, o el de la siguiente si todavía no empezó): sirve para saber
+    // si hay que disparar el efecto glitch sobre el nombre de la materia.
+    const nombreVisible =
+      infoMateria.tipo === "en_clase" ? infoMateria.actual.nombre
+      : infoMateria.tipo === "esperando" ? infoMateria.siguiente.nombre
+      : null;
+
     if (infoMateria.tipo === "en_clase") {
-      if (estadoMateriaAnterior !== infoMateria.actual.nombre) {
-        sonarCambioDeMateria();
-        // Destello visual breve en el panel para reforzar el cambio de materia
-        el.subjectPanel.classList.remove("flash");
-        void el.subjectPanel.offsetWidth; // fuerza reflow para reiniciar la animación
-        el.subjectPanel.classList.add("flash");
-      }
+      if (estadoMateriaAnterior !== infoMateria.actual.nombre) sonarCambioDeMateria();
       estadoMateriaAnterior = infoMateria.actual.nombre;
 
       el.subjectPanel.classList.add("is-active");
       el.subjectStatus.textContent = "Estás en clase de";
       el.subjectName.textContent = infoMateria.actual.nombre;
+      if (nombreVisible !== nombreMostradoAnterior) dispararGlitch(el.subjectName);
       mostrarProfesor(infoMateria.actual);
 
       const restante = infoMateria.actual.finDate - ahora;
@@ -581,6 +624,7 @@
         ? `Siguiente: ${infoMateria.siguiente.nombre}`
         : "Siguiente: no hay más clases hoy";
       el.subjectRemaining.textContent = textoRestantes(infoMateria.restantes);
+      nombreMostradoAnterior = nombreVisible;
       return;
     }
 
@@ -590,6 +634,7 @@
       estadoMateriaAnterior = "esperando";
       el.subjectStatus.textContent = "Sin clase en este momento";
       el.subjectName.textContent = infoMateria.siguiente.nombre;
+      if (nombreVisible !== nombreMostradoAnterior) dispararGlitch(el.subjectName);
       mostrarProfesor(infoMateria.siguiente);
 
       const restante = infoMateria.siguiente.inicioDate - ahora;
@@ -600,6 +645,7 @@
 
       el.subjectNext.textContent = `Empieza en ${pad2(h)}:${pad2(m)}:${pad2(s)}`;
       el.subjectRemaining.textContent = textoRestantes(infoMateria.restantes - 1 >= 0 ? infoMateria.restantes - 1 : 0);
+      nombreMostradoAnterior = nombreVisible;
       return;
     }
 
@@ -613,6 +659,7 @@
     escribirNumero(el.subjectS, 0);
     el.subjectNext.textContent = "Siguiente: —";
     el.subjectRemaining.textContent = "No quedan materias por cursar";
+    nombreMostradoAnterior = null;
   }
 
   /* -----------------------------------------------------------------
@@ -692,16 +739,94 @@
 
   let yaSonoFinJornada = false;
 
-  function mostrarMensajesEspeciales(texto, icono) {
+  function mostrarMensajesEspeciales(texto, icono, animarEntrada) {
     el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = true));
     el.specialMessage.hidden = false;
     el.specialText.textContent = texto;
     el.specialIcon.textContent = icono;
+    if (animarEntrada) {
+      // Reinicia la animación de "estallido" (endBurst) aunque ya se haya
+      // reproducido antes, para la transición justo al terminar la jornada.
+      el.specialMessage.classList.remove("is-ending");
+      void el.specialMessage.offsetWidth;
+      el.specialMessage.classList.add("is-ending");
+    }
   }
 
   function ocultarMensajesEspeciales() {
     el.specialMessage.hidden = true;
+    el.specialMessage.classList.remove("is-ending");
     el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = false));
+  }
+
+  /* -----------------------------------------------------------------
+     16.1) CUENTA REGRESIVA FINAL (últimos 15 segundos antes de salir)
+     Reemplaza TODA la interfaz (salvo el switch de usuario) por un
+     contador gigante de segundos.milisegundos, actualizado cuadro a
+     cuadro con requestAnimationFrame (el "tick" normal solo corre una
+     vez por segundo y no alcanza para mostrar milisegundos fluidos).
+  ----------------------------------------------------------------- */
+
+  let cuentaFinalActiva = false;
+  let rafFinalId = null;
+
+  function iniciarCuentaFinal(horaSalida) {
+    if (cuentaFinalActiva) return; // ya está corriendo, no duplicar el loop
+    cuentaFinalActiva = true;
+    document.body.classList.add("countdown-final");
+    document.body.classList.remove("state-urgent"); // el overlay reemplaza ese estado
+    el.finalCountdown.hidden = false;
+
+    function frame() {
+      const ahora = new Date();
+      const restante = horaSalida - ahora;
+
+      if (restante <= 0) {
+        detenerCuentaFinal();
+        finalizarJornada(); // dispara la transición al toque, sin esperar el próximo tick de 1s
+        return;
+      }
+
+      const segundos = Math.floor(restante / 1000);
+      const ms = Math.floor(restante % 1000);
+      el.finalS.textContent = pad2(segundos);
+      el.finalMs.textContent = String(ms).padStart(3, "0");
+      el.finalCountdown.classList.toggle("is-critical", restante <= 5000);
+
+      rafFinalId = requestAnimationFrame(frame);
+    }
+    rafFinalId = requestAnimationFrame(frame);
+  }
+
+  function detenerCuentaFinal() {
+    if (rafFinalId !== null) cancelAnimationFrame(rafFinalId);
+    rafFinalId = null;
+    cuentaFinalActiva = false;
+    document.body.classList.remove("countdown-final");
+    el.finalCountdown.hidden = true;
+    el.finalCountdown.classList.remove("is-critical");
+  }
+
+  // Destello blanco de pantalla completa en el instante justo en que
+  // termina la jornada (se agrega y se elimina solo al terminar su
+  // propia animación CSS).
+  function dispararFlashFin() {
+    const flash = document.createElement("div");
+    flash.className = "end-flash";
+    document.body.appendChild(flash);
+    flash.addEventListener("animationend", () => flash.remove(), { once: true });
+  }
+
+  function finalizarJornada() {
+    document.body.classList.add("state-ended");
+    document.body.classList.remove("state-urgent");
+    const esPrimeraVez = !yaSonoFinJornada;
+    if (esPrimeraVez) {
+      sonarFinJornada();
+      yaSonoFinJornada = true;
+      dispararFlashFin();
+    }
+    mostrarMensajesEspeciales("La jornada escolar ha finalizado.", "◆", esPrimeraVez);
   }
 
   /* -----------------------------------------------------------------
@@ -713,12 +838,13 @@
     actualizarFecha(ahora);
     actualizarReloj(ahora);
 
-    // "Sin clase" se decide únicamente por si USUARIOS tiene o no una
-    // clave configurada para el día de hoy (0=Domingo, 6=Sábado incluidos:
-    // si no hay clave, se muestra "Hoy no hay clases." automáticamente).
+    // Ya no se asume "sin clase" por ser sábado/domingo: cada día se rige
+    // únicamente por si USUARIOS tiene o no una clave configurada para él
+    // (esto permite, por ejemplo, tener un horario de prueba los domingos).
     const horario = cargarHorarioDelDia(ahora);
     if (!horario) {
-      document.body.classList.remove("state-ended");
+      document.body.classList.remove("state-ended", "state-urgent");
+      detenerCuentaFinal();
       yaSonoFinJornada = false;
       mostrarMensajesEspeciales("Hoy no hay clases.", "✦");
       return;
@@ -728,12 +854,9 @@
     const horaSalida = horaStringADate(horario.salida, ahora);
 
     if (ahora >= horaSalida) {
-      document.body.classList.add("state-ended");
-      if (!yaSonoFinJornada) {
-        sonarFinJornada();
-        yaSonoFinJornada = true;
-      }
-      mostrarMensajesEspeciales("La jornada escolar ha finalizado.", "◆");
+      detenerCuentaFinal();
+      document.body.classList.remove("state-urgent");
+      finalizarJornada();
       return;
     }
 
@@ -748,6 +871,17 @@
     const estadoPrincipal = msHastaSalida < 5 * 60 * 1000 ? "ultimos_minutos" : "normal";
     actualizarContadorPrincipal(msHastaSalida, transcurridoJornada, estadoPrincipal);
 
+    // A partir de los últimos 15 segundos, la cuenta final a pantalla
+    // completa toma el control (ver iniciarCuentaFinal). Entre los 5
+    // minutos y los 15 segundos, solo se intensifica el brillo/color del
+    // anillo y los números (estado "urgente").
+    if (msHastaSalida <= 15000) {
+      iniciarCuentaFinal(horaSalida);
+    } else {
+      detenerCuentaFinal();
+      document.body.classList.toggle("state-urgent", msHastaSalida < 5 * 60 * 1000);
+    }
+
     // --- Panel de materia actual ---
     const infoMateria = buscarMateriaActual(horario, ahora);
     actualizarPanelMaterias(infoMateria, ahora);
@@ -761,20 +895,17 @@
      18) FONDO ANIMADO: partículas tipo constelación
      Los colores se leen desde las variables CSS del usuario activo,
      así que el fondo cambia de tono automáticamente al cambiar de tema.
-     Efecto: los puntos titilan y se conectan con líneas delgadas del
-     color de acento del usuario cuando están cerca entre sí, y también
-     se conectan hacia el mouse/dedo cuando está cerca (efecto radar/HUD).
   ----------------------------------------------------------------- */
 
   let colorLinea = "rgba(91, 231, 255, ALPHA)";
-  let colorPunto = "rgba(243, 246, 250, ALPHA)";
+  let colorPunto = "rgba(62, 115, 215, 0.55)";
 
   function actualizarColoresFondo() {
     const estilos = getComputedStyle(document.documentElement);
     const cyanRgb = estilos.getPropertyValue("--cyan-rgb").trim() || "91, 231, 255";
     const whiteRgb = estilos.getPropertyValue("--white-rgb").trim() || "243, 246, 250";
     colorLinea = `rgba(${cyanRgb}, ALPHA)`;
-    colorPunto = `rgba(${whiteRgb}, ALPHA)`;
+    colorPunto = `rgba(${whiteRgb}, 0.45)`;
   }
 
   function iniciarFondoParticulas() {
@@ -783,12 +914,8 @@
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let ancho, alto, particulas;
-    const DENSIDAD = prefersReduced ? 0 : 0.00011;
+    const DENSIDAD = prefersReduced ? 0 : 0.00009;
     const VELOCIDAD = prefersReduced ? 0 : 0.18;
-    const DIST_MAX = 150;   // distancia máxima para unir dos partículas entre sí
-    const DIST_MOUSE = 220; // distancia máxima para unir una partícula al cursor
-
-    const mouse = { x: -9999, y: -9999, activo: false };
 
     function dimensionar() {
       ancho = canvas.width = window.innerWidth;
@@ -800,12 +927,12 @@
         vx: (Math.random() - 0.5) * VELOCIDAD,
         vy: (Math.random() - 0.5) * VELOCIDAD,
         r: 0.6 + Math.random() * 1.4,
-        fase: Math.random() * Math.PI * 2, // desfasaje para que titilen de forma independiente
       }));
     }
 
-    function paso(tiempo) {
+    function paso() {
       ctx.clearRect(0, 0, ancho, alto);
+      const DIST_MAX = 150;
 
       for (const p of particulas) {
         p.x += p.vx;
@@ -814,16 +941,15 @@
         if (p.y < 0 || p.y > alto) p.vy *= -1;
       }
 
-      // Líneas entre partículas cercanas + halo (glow) del color del usuario
       ctx.lineWidth = 1;
-      ctx.shadowBlur = 4;
-      ctx.shadowColor = colorLinea.replace("ALPHA", "0.6");
       for (let i = 0; i < particulas.length; i++) {
         for (let j = i + 1; j < particulas.length; j++) {
           const a = particulas[i], b = particulas[j];
           const dx = a.x - b.x, dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < DIST_MAX) {
+            // Líneas finas del color de acento del usuario activo (--cyan),
+            // más intensas cuanto más cerca están los puntos entre sí.
             const op = (1 - dist / DIST_MAX) * 0.22;
             ctx.strokeStyle = colorLinea.replace("ALPHA", op.toFixed(3));
             ctx.beginPath();
@@ -832,42 +958,17 @@
             ctx.stroke();
           }
         }
-
-        // La red "reacciona" cuando hay mouse/dedo cerca
-        if (mouse.activo) {
-          const dxm = particulas[i].x - mouse.x;
-          const dym = particulas[i].y - mouse.y;
-          const distm = Math.sqrt(dxm * dxm + dym * dym);
-          if (distm < DIST_MOUSE) {
-            const opm = (1 - distm / DIST_MOUSE) * 0.5;
-            ctx.strokeStyle = colorLinea.replace("ALPHA", opm.toFixed(3));
-            ctx.beginPath();
-            ctx.moveTo(particulas[i].x, particulas[i].y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.stroke();
-          }
-        }
       }
-      ctx.shadowBlur = 0;
 
-      // Puntos con titileo suave (efecto "constelación viva")
       for (const p of particulas) {
-        const titileo = 0.35 + 0.25 * Math.sin(tiempo * 0.0015 + p.fase);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = colorPunto.replace("ALPHA", titileo.toFixed(2));
+        ctx.fillStyle = colorPunto;
         ctx.fill();
       }
 
       requestAnimationFrame(paso);
     }
-
-    window.addEventListener("pointermove", (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      mouse.activo = true;
-    });
-    window.addEventListener("pointerleave", () => { mouse.activo = false; });
 
     dimensionar();
     window.addEventListener("resize", dimensionar);
@@ -880,6 +981,7 @@
 
   function iniciar() {
     inicializarAnillo();
+    posicionarThumbSwitch();
     actualizarColoresFondo();
     iniciarFondoParticulas();
     tick();
