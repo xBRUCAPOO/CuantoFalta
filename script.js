@@ -38,7 +38,7 @@
     bruca: {
       1: { // Lunes
         inicio: "08:55",
-        salida: "21:55",
+        salida: "0:100",
         recreos: [
           { nombre: "Recreo", inicio: "10:15", fin: "10:45" },
           { nombre: "Recreo", inicio: "14:50", fin: "14:55" },
