@@ -176,7 +176,7 @@
       },
       5: { // Viernes
         inicio: "13:00",
-        salida: "21:40",
+        salida: "19:40",
         recreos: [
           { nombre: "Recreo", inicio: "15:00", fin: "15:15" },
           { nombre: "Recreo", inicio: "17:10", fin: "17:15" },
