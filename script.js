@@ -251,6 +251,11 @@
     specialText: document.getElementById("special-text"),
     specialIcon: document.getElementById("special-icon"),
 
+    waitingPanel: document.getElementById("waiting-panel"),
+    waitingH: document.getElementById("waiting-h"),
+    waitingM: document.getElementById("waiting-m"),
+    waitingS: document.getElementById("waiting-s"),
+
     finalCountdown: document.getElementById("final-countdown"),
     finalS: document.getElementById("final-s"),
     finalMs: document.getElementById("final-ms"),
@@ -625,6 +630,7 @@
       estadoRecreoAnterior = "en_curso";
 
       el.recessPanel.classList.add("is-active");
+      el.recessPanel.classList.remove("is-empty");
       el.recessLabel.textContent = "Actualmente estás en recreo";
 
       const total = infoRecreo.recreo.finDate - infoRecreo.recreo.inicioDate;
@@ -648,6 +654,7 @@
 
     if (infoRecreo.tipo === "proximo") {
       estadoRecreoAnterior = "proximo";
+      el.recessPanel.classList.remove("is-empty");
       el.recessLabel.textContent = "Próximo recreo";
 
       // En clase: la barra se llena (0% → 100%)
@@ -664,6 +671,10 @@
     }
 
     estadoRecreoAnterior = "ninguno";
+    // Sin más recreos: la tarjeta pasa a modo "vacío" (ver CSS .recess-panel.is-empty),
+    // que oculta el punto, la barra de progreso y el contador h/m/s, dejando
+    // visible únicamente este mensaje.
+    el.recessPanel.classList.add("is-empty");
     el.recessLabel.textContent = "No quedan más recreos hoy";
     escribirNumero(el.recessH, 0);
     escribirNumero(el.recessM, 0);
@@ -677,9 +688,23 @@
 
   let yaSonoFinJornada = false;
 
+  /* mostrarVista(vista) controla qué bloque de la sección .stage está
+     visible en cada momento. Los tres bloques normales (anillo, panel
+     de materia y panel de recreo) siempre se muestran juntos; el mensaje
+     especial (fin de semana / jornada finalizada) y el temporizador de
+     espera de inicio de clases son, en cambio, excluyentes entre sí y
+     con los tres anteriores. */
+  function mostrarVista(vista) {
+    const normal = vista === "normal";
+    el.ringWrap.hidden = !normal;
+    el.subjectPanel.hidden = !normal;
+    el.recessPanel.hidden = !normal;
+    el.specialMessage.hidden = vista !== "especial";
+    el.waitingPanel.hidden = vista !== "espera";
+  }
+
   function mostrarMensajesEspeciales(texto, icono, animarEntrada) {
-    el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = true));
-    el.specialMessage.hidden = false;
+    mostrarVista("especial");
     el.specialText.textContent = texto;
     el.specialIcon.textContent = icono;
     if (animarEntrada) {
@@ -690,9 +715,22 @@
   }
 
   function ocultarMensajesEspeciales() {
-    el.specialMessage.hidden = true;
     el.specialMessage.classList.remove("is-ending");
-    el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = false));
+    mostrarVista("normal");
+  }
+
+  /* -----------------------------------------------------------------
+     16.0) TEMPORIZADOR DE ESPERA: cuánto falta para que inicien las
+     clases (se muestra solo en los días con horario cargado, mientras
+     la hora actual todavía no llegó a la hora de inicio).
+  ----------------------------------------------------------------- */
+
+  function mostrarEsperaInicio(msRestantes) {
+    mostrarVista("espera");
+    const { h, m, s } = calcularTiempoRestante(msRestantes);
+    escribirNumero(el.waitingH, h);
+    escribirNumero(el.waitingM, m);
+    escribirNumero(el.waitingS, s);
   }
 
   /* -----------------------------------------------------------------
@@ -779,13 +817,14 @@
     const horaInicio = horaStringADate(horario.inicio, ahora);
     const horaSalida = horaStringADate(horario.salida, ahora);
 
-    // Si la hora actual es menor a la hora de inicio, no mostrar el contador principal
+    // Si la hora actual es menor a la hora de inicio, en vez del contador
+    // principal se muestra únicamente el temporizador de cuánto falta
+    // para que empiecen las clases.
     if (ahora < horaInicio) {
       document.body.classList.remove("state-ended", "state-urgent");
       detenerCuentaFinal();
       yaSonoFinJornada = false;
-      ocultarMensajesEspeciales();
-      mostrarMensajesEspeciales("Las clases aún no han comenzado.", "◆");
+      mostrarEsperaInicio(horaInicio - ahora);
       return;
     }
 

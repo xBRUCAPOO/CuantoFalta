@@ -24,6 +24,17 @@
      iguales para los 2 usuarios.
   ============================================================ */
   --ring-size: min(62vmin, 460px); /* Tamaño (ancho/alto) del anillo de progreso principal (.ring-wrap / .ring). Se adapta al viewport. */
+
+  /* ============================================================
+     COLORES FIJOS (iguales para los 2 usuarios)
+     No forman parte de la paleta de marca de Bruca ni de Mely:
+     son colores neutros/utilitarios que no cambian con el tema,
+     por eso también viven acá arriba en vez de duplicarse en
+     cada bloque html[data-user="..."].
+  ============================================================ */
+  --overlay-vignette: rgba(0,0,0,0.65); /* Negro semitransparente. Oscurece los bordes de la pantalla en la viñeta (.vignette), da profundidad al fondo. Igual para ambos usuarios. */
+  --sound-toggle-bg: rgba(10,19,34,0.6); /* Azul-negro semitransparente fijo. Fondo del botón circular de sonido (.sound-toggle), independiente del tema activo. */
+  --urgent-alert-rgb: 230, 0, 18; /* Componentes RGB de un rojo de alerta fijo (no cambia con el usuario). Glow/parpadeo del anillo y de los números grandes cuando queda poco tiempo para la salida (animaciones urgentRingPulse y urgentNumFlicker). */
 }
 
 /* ===================================================================
@@ -222,7 +233,7 @@ body{
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(0,0,0,0.65) 100%);
+  background: radial-gradient(120% 90% at 50% 45%, transparent 40%, var(--overlay-vignette) 100%);
   animation: vignetteFlicker 9s ease-in-out infinite;
 }
 
@@ -337,7 +348,7 @@ body{
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--gray-dim);
-  background: rgba(10, 19, 34, 0.6);
+  background: var(--sound-toggle-bg);
   color: var(--gray);
   display: flex;
   align-items: center;
@@ -534,6 +545,22 @@ body{
 .recess-panel.is-active{
   border-color: var(--violet);
   box-shadow: 0 0 24px rgba(var(--violet-rgb), 0.25);
+}
+
+/* Cuando ya no quedan más recreos en el día: se oculta todo dentro
+   de la tarjeta (punto, barra de progreso y contador h/m/s) y sólo
+   queda visible el mensaje "No quedan más recreos hoy". */
+.recess-panel.is-empty{
+  padding-top: clamp(16px, 3vh, 22px);
+  padding-bottom: clamp(16px, 3vh, 22px);
+}
+.recess-panel.is-empty .recess-dot,
+.recess-panel.is-empty .recess-bar-track,
+.recess-panel.is-empty .small-time{
+  display: none;
+}
+.recess-panel.is-empty .recess-head{
+  margin-bottom: 0;
 }
 
 .recess-head{
@@ -736,6 +763,59 @@ body{
   letter-spacing: 0.02em;
 }
 
+/* ---- Cuenta regresiva para el inicio de clases ----
+   Se muestra sola (reemplaza al anillo, panel de materia y panel de
+   recreo) los días en que hay horario cargado pero todavía no llegó
+   la hora de inicio de clases. */
+
+.waiting-panel{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: fadeIn 0.8s ease both;
+}
+
+.waiting-icon{
+  margin: 0;
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  color: var(--cyan);
+  animation: floaty 4s ease-in-out infinite, glowPulse 2.6s ease-in-out infinite;
+}
+
+.waiting-label{
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.waiting-time{
+  display: flex;
+  align-items: baseline;
+  gap: clamp(4px, 1vw, 10px);
+  font-family: var(--font-display);
+  margin-top: 4px;
+}
+
+.waiting-time .num{
+  font-size: clamp(2.1rem, 9vw, 3.6rem);
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 0 0 18px rgba(var(--cyan-rgb), 0.35);
+  display: inline-block;
+  min-width: 1.6ch;
+}
+
+.waiting-time .unit-label{
+  font-size: clamp(0.8rem, 2vw, 1.05rem);
+  color: var(--cyan);
+  font-family: var(--font-ui);
+  font-weight: 500;
+}
+
 /* -------------------- Pie -------------------- */
 
 .footer{
@@ -900,15 +980,15 @@ body.countdown-final .sound-toggle{
   }
   50%{
     stroke: var(--end);
-    filter: drop-shadow(0 0 14px rgba(230,0,18,0.95)) drop-shadow(0 0 32px rgba(230,0,18,0.55));
+    filter: drop-shadow(0 0 14px rgba(var(--urgent-alert-rgb),0.95)) drop-shadow(0 0 32px rgba(var(--urgent-alert-rgb),0.55));
   }
 }
 
 /* Parpadeo tipo "señal débil" de los números grandes en el estado urgente. */
 @keyframes urgentNumFlicker{
-  0%, 100%{ opacity: 1; text-shadow: 0 0 18px rgba(230,0,18,0.4); }
+  0%, 100%{ opacity: 1; text-shadow: 0 0 18px rgba(var(--urgent-alert-rgb),0.4); }
   50%{ opacity: 0.65; text-shadow: 2px 0 var(--cyan), -2px 0 var(--end); }
-  75%{ opacity: 1; text-shadow: 0 0 18px rgba(230,0,18,0.4); }
+  75%{ opacity: 1; text-shadow: 0 0 18px rgba(var(--urgent-alert-rgb),0.4); }
 }
 
 /* Efecto glitch/RGB-split genérico: desplaza el texto y lo "divide" en
@@ -972,6 +1052,10 @@ html[data-user="mely"] .subject-next,
 html[data-user="mely"] .subject-remaining{ font-size: clamp(0.47rem, 1.1vw, 0.55rem); }
 html[data-user="mely"] .special-icon{ font-size: clamp(1.1rem, 3.4vw, 1.65rem); }
 html[data-user="mely"] .special-text{ font-size: clamp(0.7rem, 2.3vw, 1.05rem); }
+html[data-user="mely"] .waiting-icon{ font-size: clamp(1.1rem, 3.4vw, 1.65rem); }
+html[data-user="mely"] .waiting-label{ font-size: clamp(0.5rem, 1.2vw, 0.65rem); }
+html[data-user="mely"] .waiting-time .num{ font-size: clamp(1.4rem, 6vw, 2.4rem); }
+html[data-user="mely"] .waiting-time .unit-label{ font-size: clamp(0.55rem, 1.3vw, 0.7rem); }
 html[data-user="mely"] .footer{ font-size: clamp(0.42rem, 0.95vw, 0.48rem); }
 html[data-user="mely"] .user-switch .user-btn{ font-size: clamp(0.46rem, 1.1vw, 0.55rem); }
 html[data-user="mely"] .final-countdown-label{ font-size: clamp(0.5rem, 1.5vw, 0.72rem); }

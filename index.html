@@ -6,7 +6,7 @@
 <title>CuantoFalta?</title>
 <meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida, el próximo recreo y la materia actual." />
 <link rel="shortcut icon" href="Imgs/CauntoFalta_Reloj.png" type="image/x-icon">
-<link rel="stylesheet" href="style.css?v=4" />
+<link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
 
@@ -150,14 +150,27 @@
         <p class="special-text" id="special-text"></p>
       </div>
 
+      <!-- Temporizador de espera: se muestra solo, en lugar del resto de
+           la interfaz, los días con horario cargado en los que todavía
+           no llegó la hora de inicio de clases. -->
+      <div class="waiting-panel" id="waiting-panel" hidden aria-live="polite">
+        <p class="waiting-icon" aria-hidden="true">◆</p>
+        <p class="waiting-label">Las clases comienzan en</p>
+        <div class="waiting-time" id="waiting-time">
+          <span class="num" id="waiting-h">00</span><span class="unit-label">h</span>
+          <span class="num" id="waiting-m">00</span><span class="unit-label">m</span>
+          <span class="num" id="waiting-s">00</span><span class="unit-label">s</span>
+        </div>
+      </div>
+
     </section>
 
     <footer class="footer">
-      <span>SISTEMA ESCOLAR</span><span class="dot-sep">·</span><span>TIEMPO REAL</span>
+      <span>HORARIOS A TIEMPO REAL</span><span class="dot-sep">·</span><span>V. 0.2</span>
     </footer>
 
   </main>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>
