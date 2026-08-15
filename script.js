@@ -159,8 +159,8 @@
         materias: [
           { nombre: "Filosofía",                      profesor: "Mercado",     inicio: "13:00", fin: "15:00" },
           { nombre: "Ciudadanía y Política",           profesor: "Sánchez A.", inicio: "15:15", fin: "17:10" },
-          { nombre: "Adm. de la Producción / ConTIC",  profesor: "Rosas-Rocha", inicio: "17:15", fin: "17:45" },
-          { nombre: "Sist. Inform. Contable",          profesor: "Barrionuevo", inicio: "17:45", fin: "19:40" },
+          { nombre: "Adm. de la Producción / ConTIC",  profesor: "Rosas-Rocha", inicio: "17:15", fin: "18:30" },
+          { nombre: "Sist. Inform. Contable",          profesor: "Barrionuevo", inicio: "18:30", fin: "19:40" },
         ],
       },
     },
@@ -631,7 +631,8 @@
 
       el.recessPanel.classList.add("is-active");
       el.recessPanel.classList.remove("is-empty");
-      el.recessLabel.textContent = "Actualmente estás en recreo";
+      // Se muestra directamente el nombre del recreo en curso (ej: "Recreo 1/4")
+      el.recessLabel.textContent = infoRecreo.recreo.nombre;
 
       const total = infoRecreo.recreo.finDate - infoRecreo.recreo.inicioDate;
       const restante = infoRecreo.recreo.finDate - ahora;
