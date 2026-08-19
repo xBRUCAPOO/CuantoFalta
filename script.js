@@ -46,7 +46,7 @@
       },
       3: { // Miércoles (jornada reducida)
         inicio: "13:20",
-        salida: "17:05",
+        salida: "19:05",
         recreos: [
           { nombre: "Recreo 1/3", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo 2/3", inicio: "16:15", fin: "16:30" },
