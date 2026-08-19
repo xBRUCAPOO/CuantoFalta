@@ -1024,18 +1024,26 @@ body.countdown-final .sound-toggle{
 
 @keyframes screenFlash{ from{ opacity: 0.85; } to{ opacity: 0; } }
 
-/* -------------------- Ajuste de tamaño para Mely: ELIMINADO -------------------- */
-/* Este bloque existía porque Mely usaba 'Playwrite ID' (tipografía cursiva/
-   manuscrita que a los mismos tamaños que Bruca se veía apretada y las
-   letras parecían superponerse), así que achicaba a mano, elemento por
-   elemento, los tamaños SOLO para Mely.
-   Ahora Mely usa 'Yuyu' (números grandes) y 'Roboto Slab' (interfaz), que
-   son tipografías normales (no cursivas/conectadas) y a esos tamaños
-   reducidos se veían diminutas y difíciles de leer. Por eso se sacó todo
-   el bloque: Mely vuelve a compartir exactamente los mismos tamaños de
-   fuente que Bruca (definidos más arriba, sin selector de usuario), que
-   es el tamaño "correcto" pensado para el viewport real de los equipos
-   donde se usa la app (Moto G72 y Samsung A56, ~360-412px de ancho). */
+/* -------------------- Ajuste de tamaño para Mely (letra "Yuyu") -------------------- */
+/* 'Yuyu' es la tipografía de --font-display (números grandes: contador de
+   salida/espera, hora del recreo y de la materia, nombre de la materia y
+   la cuenta regresiva final). A pedido, se agranda ese texto SOLO para
+   Mely (sin tocar --font-ui/--font-mono ni ningún tamaño de Bruca), por
+   arriba incluso de los tamaños base que comparten los dos usuarios. */
+html[data-user="mely"] .big-time .num,
+html[data-user="mely"] .waiting-time .num{
+  font-size: clamp(2.7rem, 11.5vw, 4.8rem);
+}
+html[data-user="mely"] .subject-name{
+  font-size: clamp(1.4rem, 4.6vw, 2rem);
+}
+html[data-user="mely"] .small-time,
+html[data-user="mely"] .subject-time{
+  font-size: clamp(1.35rem, 4.6vw, 2rem);
+}
+html[data-user="mely"] .final-countdown-time{
+  font-size: clamp(5.8rem, 29vw, 14.5rem);
+}
 
 /* -------------------- Responsive -------------------- */
 
