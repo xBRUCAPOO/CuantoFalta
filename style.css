@@ -12,10 +12,10 @@
 
 /* Fuentes usadas por ambos temas. Bruca usa Orbitron/Chakra Petch/Share Tech
    Mono (Chakra Petch es la tipografía de interfaz que antes tenía Mely).
-   Mely usa Orbitron/Playwrite ID/JetBrains Mono (Playwrite ID es la nueva
-   tipografía de interfaz de Mely). Rajdhani queda importada igual por si
-   se usa en algún lugar suelto del proyecto. */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Playwrite+ID:wght@100..400&display=swap');
+   Mely usa Roboto Slab y Yuyu (reemplazan a 'Playwrite ID' en TODO el tema
+   Mely, según lo pedido). Rajdhani queda importada igual por si se usa en
+   algún lugar suelto del proyecto. */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Chakra+Petch:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Roboto+Slab:wght@100..900&family=Yuyu&display=swap');
 
 :root{
   /* ============================================================
@@ -162,9 +162,9 @@ html:not([data-user]){
   --gray-dim:    var(--color-texto-apagado);     /* Bordes y pistas de barras: recreo, materia, footer. */
   --violet:      var(--color-principal-activo);  /* Color de "estado activo": punto y barra cuando el recreo está en curso. */
   --end:         #ff2d55; /* Color de alerta de fin de jornada. Acento rojo de aviso (reservado para estados "urgentes"). */
-  --font-display:'Playwrite ID', cursive;    /* Tipografía de números grandes (contador de salida, recreo, materia). ANTES era 'Orbitron'; ahora 'Playwrite ID' en TODO el tema Mely, según lo pedido. */
-  --font-ui:     'Playwrite ID', cursive; /* Tipografía de interfaz de Mely: etiquetas, botones (incluido el texto del switch de usuario) y textos de estado. */
-  --font-mono:   'Playwrite ID', cursive; /* Tipografía del reloj digital y del pie de página. ANTES era 'JetBrains Mono'; ahora también 'Playwrite ID' para que TODO el usuario Mely use la misma tipografía. */
+  --font-display:'Yuyu', cursive;         /* Tipografía de números grandes (contador de salida, recreo, materia). ANTES era 'Playwrite ID'; ahora 'Yuyu', según lo pedido. */
+  --font-ui:     'Roboto Slab', serif;    /* Tipografía de interfaz de Mely: etiquetas, botones (incluido el texto del switch de usuario) y textos de estado. ANTES era 'Playwrite ID'; ahora 'Roboto Slab', según lo pedido. */
+  --font-mono:   'Roboto Slab', serif;    /* Tipografía del reloj digital y del pie de página. ANTES era 'Playwrite ID'; ahora también 'Roboto Slab' para que el resto del tema Mely combine con la tipografía de interfaz. */
 
   /* ---------------------------------------------------------------
      3) COMPONENTES RGB (sin alpha) PARA SOMBRAS/GLOWS/PARTÍCULAS
@@ -1020,18 +1020,20 @@ body.countdown-final .sound-toggle{
 
 @keyframes screenFlash{ from{ opacity: 0.85; } to{ opacity: 0; } }
 
-/* -------------------- Ajuste de tamaño para Mely (Playwrite ID) -------------------- */
-/* Playwrite ID es una tipografía cursiva/manuscrita (los trazos de las
-   letras se conectan entre sí, a diferencia de Orbitron o Chakra Petch),
-   así que a los mismos tamaños se ve apretada y las letras parecen
-   superponerse. Este bloque reduce (a mano, elemento por elemento) los
-   tamaños de fuente SOLO cuando el usuario activo es Mely, sin tocar en
-   absoluto los tamaños de Bruca. Los valores mínimos de cada clamp() están
-   pensados para el ancho de pantalla real (en píxeles CSS, no físicos) de
-   los dos equipos donde se va a usar la app: un Moto G72 y un Samsung A56,
-   ambos con un viewport de aproximadamente 360-412px de ancho — en ese
-   rango, el valor que termina aplicándose casi siempre es el mínimo del
-   clamp(), así que ese es el número que más importa acá.
+/* -------------------- Ajuste de tamaño para Mely (Yuyu / Roboto Slab) -------------------- */
+/* Este bloque viene de cuando Mely usaba 'Playwrite ID' (tipografía cursiva/
+   manuscrita que a los mismos tamaños se veía apretada). Ahora que Mely usa
+   'Yuyu' (números grandes) y 'Roboto Slab' (interfaz), estos tamaños quedan
+   como punto de partida: revisar si conviene agrandarlos, ya que ninguna de
+   las dos fuentes nuevas es cursiva/conectada como lo era Playwrite ID. Este
+   bloque reduce (a mano, elemento por elemento) los tamaños de fuente SOLO
+   cuando el usuario activo es Mely, sin tocar en absoluto los tamaños de
+   Bruca. Los valores mínimos de cada clamp() están pensados para el ancho de
+   pantalla real (en píxeles CSS, no físicos) de los dos equipos donde se va
+   a usar la app: un Moto G72 y un Samsung A56, ambos con un viewport de
+   aproximadamente 360-412px de ancho — en ese rango, el valor que termina
+   aplicándose casi siempre es el mínimo del clamp(), así que ese es el
+   número que más importa acá.
    La especificidad de estos selectores (con el atributo html[data-user="mely"]
    agregado) es mayor que la de las reglas originales de arriba, así que no
    importa el orden: siempre ganan estas versiones más chicas para Mely. */

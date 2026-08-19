@@ -45,8 +45,8 @@
         ],
       },
       3: { // Miércoles (jornada reducida)
-        inicio: "10:30",
-        salida: "19:05",
+        inicio: "13:20",
+        salida: "17:05",
         recreos: [
           { nombre: "Recreo 1/3", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo 2/3", inicio: "16:15", fin: "16:30" },
@@ -54,9 +54,9 @@
         ],
         materias: [
           { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
-          { nombre: "Educación Física", inicio: "10:30", fin: "11:30" },
-          { nombre: "Estadísticas",     inicio: "13:30", fin: "14:50" },
-          { nombre: "Programación III", inicio: "14:55", fin: "19:05" },
+          { nombre: "Estadística",     inicio: "13:30", fin: "14:10" },
+          { nombre: "Recursos Humanos",     inicio: "14:10", fin: "14:50" },
+          { nombre: "Programación III", inicio: "14:50", fin: "19:05" },
         ],
       },
       4: { // Jueves
@@ -77,14 +77,15 @@
       },
       5: { // Viernes
         inicio: "13:20",
-        salida: "17:05",
+        salida: "18:30",
         recreos: [
           { nombre: "Recreo 1/2", inicio: "14:50", fin: "14:55" },
           { nombre: "Recreo 2/2", inicio: "16:15", fin: "16:30" },
         ],
         materias: [
           { nombre: "Formación",   inicio: "13:20", fin: "13:30" },
-          { nombre: "Recursos Humanos",                          profesor: "Oviedo Ivana", inicio: "13:30", fin: "15:35" },
+          { nombre: "Estadística",     inicio: "13:30", fin: "14:10" },
+          { nombre: "Recursos Humanos",                          profesor: "Oviedo Ivana", inicio: "14:10", fin: "15:35" },
           { nombre: "Ed. Artística Teatro",                      inicio: "15:35", fin: "17:05" },
           { nombre: "Economía y Gestión de la Prod. Industrial", profesor: "Nancy",        inicio: "17:05", fin: "18:30" },
         ],
