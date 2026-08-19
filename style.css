@@ -113,7 +113,11 @@ html:not([data-user]){
   ==========================================*/
   --color-principal:        #000180; /* Azul principal de marca Mely. Acento: anillo de progreso, reloj, unidades h/m/s. */
   --color-principal-hover:  #1B2FBF; /* Azul intermedio (hover/brillo). Subtítulos con brillo, íconos de mensajes especiales. */
-  --color-principal-activo: #3248E6; /* Azul más claro/activo. Estado "en curso": punto y barra del recreo cuando está activo. */
+  --color-principal-activo: #3248E6; /* Azul más claro/activo. Reservado para otros usos de "acento activo" que no sean el estado "en curso" del recreo/materia (ver --color-online-verde). */
+  /*==========================================
+      ESTADO "EN CURSO" (recreo / materia activa)
+  ==========================================*/
+  --color-online-verde:       #00e676; /* Verde "online". Punto y barra del recreo/materia cuando está en curso — igual que en Bruca, para que el estado "en curso" se identifique siempre en verde sin importar el usuario. */
   /*==========================================
       FONDOS (mucho más oscuros)
   ==========================================*/
@@ -160,7 +164,7 @@ html:not([data-user]){
   --white:       var(--color-texto);             /* Texto de alto contraste: números grandes, mensajes especiales, nombre de materia. */
   --gray:        var(--color-texto-secundario);  /* Texto secundario: fecha, etiquetas, unidades pequeñas. */
   --gray-dim:    var(--color-texto-apagado);     /* Bordes y pistas de barras: recreo, materia, footer. */
-  --violet:      var(--color-principal-activo);  /* Color de "estado activo": punto y barra cuando el recreo está en curso. */
+  --violet:      var(--color-online-verde);  /* Color de "estado activo": punto y barra cuando el recreo/materia está en curso. Verde igual que en Bruca (antes usaba el azul de marca, por eso no se veía verde). */
   --end:         #ff2d55; /* Color de alerta de fin de jornada. Acento rojo de aviso (reservado para estados "urgentes"). */
   --font-display:'Yuyu', cursive;         /* Tipografía de números grandes (contador de salida, recreo, materia). ANTES era 'Playwrite ID'; ahora 'Yuyu', según lo pedido. */
   --font-ui:     'Roboto Slab', serif;    /* Tipografía de interfaz de Mely: etiquetas, botones (incluido el texto del switch de usuario) y textos de estado. ANTES era 'Playwrite ID'; ahora 'Roboto Slab', según lo pedido. */
@@ -172,7 +176,7 @@ html:not([data-user]){
   --cyan-rgb:      0, 1, 128;     /* Componentes RGB de --cyan (azul). Glow del reloj, del anillo y de los números al cambiar. También colorea los puntos y líneas del fondo animado. */
   --cyan-soft-rgb: 27, 47, 191;   /* Componentes RGB de --cyan-soft. Brillo intenso en el pulso de los números y en glowPulse. */
   --white-rgb:     232, 238, 255; /* Componentes RGB de --white. Reservado para textos/detalles que necesiten blanco puro con alpha variable. */
-  --violet-rgb:    50, 72, 230;   /* Componentes RGB de --violet. Glow del panel de recreo/materia cuando está activo. */
+  --violet-rgb:    0, 230, 118;   /* Componentes RGB de --violet (verde online). Glow del panel de recreo/materia cuando está activo. */
 }
 
 *{
