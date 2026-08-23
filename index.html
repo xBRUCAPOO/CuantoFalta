@@ -6,7 +6,7 @@
 <title>CuantoFalta?</title>
 <meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida, el próximo recreo y la materia actual." />
 <link rel="shortcut icon" href="Imgs/CauntoFalta_Reloj.png" type="image/x-icon">
-<link rel="stylesheet" href="style.css?v=6" />
+<link rel="stylesheet" href="style.css?v=10" />
 </head>
 <body>
 
@@ -41,17 +41,53 @@
     <button type="button" class="user-btn" data-user="mely">♠️ Mely 💙</button>
   </div>
 
-  <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="Activar sonido de avisos">
-    <svg class="icon icon--on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <path d="M4 9v6h4l5 4V5L8 9H4z"/>
-      <path d="M16.5 8.5a5 5 0 0 1 0 7"/>
-      <path d="M19 6a8 8 0 0 1 0 12"/>
-    </svg>
-    <svg class="icon icon--off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-      <path d="M4 9v6h4l5 4V5L8 9H4z"/>
-      <path d="M17 9l5 6M22 9l-5 6"/>
+  <!-- Botón de ajustes (tuerca): abre el panel con el sonido de avisos
+       y el editor de hora de salida de hoy. Reemplaza al antiguo botón
+       de volumen suelto, que ahora vive DENTRO del panel. -->
+  <button id="settings-toggle" class="settings-toggle" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="settings-panel" aria-label="Abrir ajustes">
+    <svg class="icon icon--gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3 13.09H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
     </svg>
   </button>
+
+  <!-- Fondo oscuro detrás del panel de ajustes -->
+  <div class="settings-overlay" id="settings-overlay" hidden></div>
+
+  <!-- Panel de ajustes: sonido de avisos + hora de salida de hoy -->
+  <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+    <div class="settings-panel-head">
+      <p class="settings-title" id="settings-title">Ajustes</p>
+      <button type="button" class="settings-close" id="settings-close" aria-label="Cerrar ajustes">✕</button>
+    </div>
+
+    <div class="settings-section">
+      <p class="settings-section-label">Sonido de avisos</p>
+      <button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="false">
+        <svg class="icon icon--on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 9v6h4l5 4V5L8 9H4z"/>
+          <path d="M16.5 8.5a5 5 0 0 1 0 7"/>
+          <path d="M19 6a8 8 0 0 1 0 12"/>
+        </svg>
+        <svg class="icon icon--off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M4 9v6h4l5 4V5L8 9H4z"/>
+          <path d="M17 9l5 6M22 9l-5 6"/>
+        </svg>
+        <span class="sound-toggle-label" id="sound-toggle-label">Sonido desactivado</span>
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <p class="settings-section-label">Hora de salida de hoy</p>
+      <p class="settings-hint" id="settings-hint">—</p>
+      <div class="settings-time-row">
+        <input type="time" id="settings-time-input" class="settings-time-input" aria-label="Nueva hora de salida" />
+        <button type="button" class="settings-btn settings-btn--primary" id="settings-save">Guardar</button>
+      </div>
+      <button type="button" class="settings-btn settings-btn--ghost" id="settings-reset">Restablecer hora normal</button>
+      <p class="settings-note">El cambio vale solo por hoy. Mañana vuelve sola a la hora normal.</p>
+    </div>
+  </div>
 
   <!-- Cuenta regresiva final: se muestra sola (sin el resto de la interfaz)
        en los últimos 15 segundos antes de la salida -->
@@ -166,11 +202,11 @@
     </section>
 
     <footer class="footer">
-      <span>HORARIOS A TIEMPO REAL</span><span class="dot-sep">·</span><span>V. 0.5</span>
+      <span>HORARIOS A TIEMPO REAL</span><span class="dot-sep">·</span><span>V. 0.9</span>
     </footer>
 
   </main>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>

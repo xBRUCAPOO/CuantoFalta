@@ -33,7 +33,8 @@
      cada bloque html[data-user="..."].
   ============================================================ */
   --overlay-vignette: rgba(0,0,0,0.65); /* Negro semitransparente. Oscurece los bordes de la pantalla en la viñeta (.vignette), da profundidad al fondo. Igual para ambos usuarios. */
-  --sound-toggle-bg: rgba(10,19,34,0.6); /* Azul-negro semitransparente fijo. Fondo del botón circular de sonido (.sound-toggle), independiente del tema activo. */
+  --settings-toggle-bg: rgba(10,19,34,0.6); /* Azul-negro semitransparente fijo. Fondo del botón circular de ajustes (.settings-toggle, la tuerca arriba a la derecha), independiente del tema activo. ANTES era el fondo del botón de sonido (--sound-toggle-bg); el botón de sonido ahora vive dentro del panel de ajustes y usa colores del tema activo. */
+  --settings-overlay-bg: rgba(0,0,0,0.6); /* Negro semitransparente fijo. Fondo oscuro detrás del panel de ajustes (.settings-overlay), igual para los 2 usuarios para no competir con los colores del panel. */
   --urgent-alert-rgb: 230, 0, 18; /* Componentes RGB de un rojo de alerta fijo (no cambia con el usuario). Glow/parpadeo del anillo y de los números grandes cuando queda poco tiempo para la salida (animaciones urgentRingPulse y urgentNumFlicker). */
 }
 
@@ -341,9 +342,12 @@ body{
   color: var(--white);
 }
 
-/* -------------------- Botón de sonido -------------------- */
+/* -------------------- Botón de ajustes (tuerca, arriba a la derecha) -------------------- */
+/* Ocupa el mismo lugar/tamaño que antes tenía el botón de sonido suelto.
+   Solo abre/cierra el panel de ajustes: no tiene estado propio de
+   "activado", por eso no usa aria-pressed sino aria-expanded. */
 
-.sound-toggle{
+.settings-toggle{
   position: fixed;
   top: 20px;
   right: 70px;
@@ -352,12 +356,122 @@ body{
   height: 38px;
   border-radius: 50%;
   border: 1px solid var(--gray-dim);
-  background: var(--sound-toggle-bg);
+  background: var(--settings-toggle-bg);
   color: var(--gray);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: border-color 0.25s, color 0.25s, box-shadow 0.25s, transform 0.4s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.settings-toggle:hover{ border-color: var(--cyan-dim); color: var(--cyan); transform: rotate(45deg); }
+.settings-toggle:focus-visible{
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+.settings-toggle[aria-expanded="true"]{ color: var(--cyan); box-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35); border-color: var(--cyan-dim); }
+.settings-toggle .icon--gear{ width: 19px; height: 19px; }
+
+/* -------------------- Panel de ajustes (sonido + hora de salida) -------------------- */
+
+.settings-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 24;
+  background: var(--settings-overlay-bg);
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.25s ease both;
+}
+
+.settings-panel{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 25;
+  width: min(90vw, 360px);
+  max-height: 86vh;
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(var(--cyan-rgb),0.10), var(--bg-elev) 60%);
+  border: 1px solid var(--gray-dim);
+  border-radius: 16px;
+  padding: 18px 20px 22px;
+  box-shadow: 0 0 34px rgba(var(--cyan-rgb), 0.22), 0 18px 40px rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  animation: settingsPopIn 0.28s cubic-bezier(.3,1.4,.4,1) both;
+  font-family: var(--font-ui);
+}
+
+@keyframes settingsPopIn{
+  from{ opacity: 0; transform: translate(-50%, -46%) scale(0.94); }
+  to{ opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.settings-panel-head{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gray-dim);
+}
+
+.settings-title{
+  margin: 0;
+  font-size: clamp(0.9rem, 2.4vw, 1.05rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.settings-close{
+  appearance: none;
+  border: 1px solid var(--gray-dim);
+  background: transparent;
+  color: var(--gray);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+  font-size: 0.85rem;
+  transition: border-color 0.25s, color 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+.settings-close:hover{ border-color: var(--cyan-dim); color: var(--cyan); }
+.settings-close:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.settings-section{
+  margin-bottom: 18px;
+}
+.settings-section:last-child{ margin-bottom: 0; }
+
+.settings-section-label{
+  margin: 0 0 8px;
+  font-size: clamp(0.62rem, 1.5vw, 0.7rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+/* Botón de sonido: ahora vive DENTRO del panel, en fila completa,
+   con ícono + etiqueta de texto en vez de ser un círculo suelto. */
+.sound-toggle{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  appearance: none;
+  border: 1px solid var(--gray-dim);
+  background: rgba(var(--cyan-rgb), 0.06);
+  color: var(--gray);
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: clamp(0.72rem, 1.8vw, 0.82rem);
   transition: border-color 0.25s, color 0.25s, box-shadow 0.25s;
   -webkit-tap-highlight-color: transparent;
   outline: none;
@@ -367,13 +481,86 @@ body{
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
 }
-.sound-toggle .icon{ width: 18px; height: 18px; }
+.sound-toggle .icon{ width: 18px; height: 18px; flex-shrink: 0; }
 .sound-toggle .icon--off{ display: none; }
 .sound-toggle[aria-pressed="true"]{ color: var(--cyan); box-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35); border-color: var(--cyan-dim); }
 .sound-toggle[aria-pressed="true"] .icon--on{ display: block; }
 .sound-toggle[aria-pressed="true"] .icon--off{ display: none; }
 .sound-toggle[aria-pressed="false"] .icon--on{ display: none; }
 .sound-toggle[aria-pressed="false"] .icon--off{ display: block; }
+
+.settings-hint{
+  margin: 0 0 10px;
+  font-size: clamp(0.68rem, 1.7vw, 0.78rem);
+  color: var(--cyan-soft);
+}
+
+.settings-time-row{
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.settings-time-input{
+  flex: 1;
+  min-width: 0;
+  background: rgba(var(--cyan-rgb), 0.06);
+  border: 1px solid var(--gray-dim);
+  border-radius: 10px;
+  padding: 9px 10px;
+  color: var(--white);
+  font-family: var(--font-mono, var(--font-ui));
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.settings-time-input:focus{ border-color: var(--cyan); box-shadow: 0 0 10px rgba(var(--cyan-rgb),0.3); }
+.settings-time-input:disabled{ opacity: 0.4; cursor: not-allowed; }
+/* Ícono/relojito nativo del input time: se tiñe para que se note sobre fondo oscuro */
+.settings-time-input::-webkit-calendar-picker-indicator{ filter: invert(1); cursor: pointer; }
+
+.settings-btn{
+  appearance: none;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-family: var(--font-ui);
+  font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: filter 0.2s, border-color 0.25s, color 0.25s, background 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.settings-btn:focus-visible{ outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.settings-btn--primary{
+  border: none;
+  background: var(--cyan);
+  color: var(--black, #000);
+  white-space: nowrap;
+}
+.settings-btn--primary:hover{ filter: brightness(1.12); }
+.settings-btn--primary:disabled{ opacity: 0.45; cursor: not-allowed; filter: none; }
+
+.settings-btn--ghost{
+  display: block;
+  width: 100%;
+  border: 1px solid var(--gray-dim);
+  background: transparent;
+  color: var(--gray);
+  margin-bottom: 8px;
+}
+.settings-btn--ghost:hover{ border-color: var(--cyan-dim); color: var(--cyan); }
+.settings-btn--ghost:disabled{ opacity: 0.45; cursor: not-allowed; }
+
+.settings-note{
+  margin: 0;
+  font-size: clamp(0.6rem, 1.5vw, 0.68rem);
+  color: var(--gray);
+  opacity: 0.8;
+  line-height: 1.4;
+}
 
 /* -------------------- Layout principal -------------------- */
 
@@ -862,7 +1049,7 @@ body.countdown-final .app{
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-body.countdown-final .sound-toggle{
+body.countdown-final .settings-toggle{
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -1048,10 +1235,11 @@ html[data-user="mely"] .final-countdown-time{
 /* -------------------- Responsive -------------------- */
 
 @media (max-width: 420px){
-  .sound-toggle{ top: 14px; right: 56px; width: 32px; height: 32px; }
+  .settings-toggle{ top: 14px; right: 56px; width: 32px; height: 32px; }
   .user-switch{ top: 12px; padding: 3px; }
   .user-switch .user-btn{ padding: 5px 12px; }
   .big-time{ gap: 4px; }
+  .settings-panel{ padding: 16px 16px 18px; }
 }
 
 @media (max-height: 560px){

@@ -192,6 +192,14 @@
     actualizarBotonesUsuario();
     posicionarThumbSwitch();
     actualizarColoresFondo();
+    // Si el panel de ajustes está abierto al cambiar de usuario, se
+    // refresca para mostrar la hora de salida (normal o personalizada)
+    // del usuario recién seleccionado, no la del anterior. (Las funciones
+    // de ajustes están declaradas más abajo en este mismo archivo, pero
+    // al ser "function" quedan disponibles acá arriba por hoisting.)
+    if (panelAjustesAbierto()) {
+      actualizarPanelAjustes();
+    }
     tick(); // refresca todo inmediatamente con el nuevo horario/paleta
   }
 
@@ -262,6 +270,16 @@
     finalMs: document.getElementById("final-ms"),
 
     soundToggle: document.getElementById("sound-toggle"),
+    soundToggleLabel: document.getElementById("sound-toggle-label"),
+
+    settingsToggle: document.getElementById("settings-toggle"),
+    settingsOverlay: document.getElementById("settings-overlay"),
+    settingsPanel: document.getElementById("settings-panel"),
+    settingsClose: document.getElementById("settings-close"),
+    settingsHint: document.getElementById("settings-hint"),
+    settingsTimeInput: document.getElementById("settings-time-input"),
+    settingsSave: document.getElementById("settings-save"),
+    settingsReset: document.getElementById("settings-reset"),
   };
 
   /* -----------------------------------------------------------------
@@ -303,7 +321,82 @@
 
   function cargarHorarioDelDia(d) {
     const horarioUsuario = USUARIOS[usuarioActual] || {};
-    return horarioUsuario[d.getDay()] || null;
+    const horarioBase = horarioUsuario[d.getDay()] || null;
+    if (!horarioBase) return null;
+
+    // Si hay una hora de salida personalizada guardada para HOY y para el
+    // usuario activo, se devuelve una copia del horario con "salida"
+    // reemplazada. El horario original en USUARIOS nunca se modifica, así
+    // que al otro día (o al cambiar de usuario) todo vuelve solo a la
+    // hora normal predeterminada.
+    const horaPersonalizada = obtenerSalidaPersonalizada(usuarioActual, d);
+    if (horaPersonalizada) {
+      return { ...horarioBase, salida: horaPersonalizada };
+    }
+    return horarioBase;
+  }
+
+  /* -----------------------------------------------------------------
+     5.1) HORA DE SALIDA PERSONALIZADA DE HOY (panel de ajustes)
+     Se guarda en localStorage junto con la fecha en la que se definió,
+     una por usuario. Al leerla, si la fecha guardada no es la de HOY,
+     se descarta (y se borra) automáticamente: así el cambio "vale solo
+     por hoy" sin que haya que hacer nada al día siguiente.
+  ----------------------------------------------------------------- */
+
+  const CLAVE_SALIDA_PERSONALIZADA = "cf_salida_personalizada";
+
+  function fechaISOLocal(d) {
+    // Fecha en formato "AAAA-MM-DD" según el reloj/huso horario LOCAL del
+    // dispositivo (a diferencia de Date#toISOString, que usa UTC y podría
+    // "cambiar de día" antes o después de tiempo cerca de la medianoche).
+    const anio = d.getFullYear();
+    const mes = String(d.getMonth() + 1).padStart(2, "0");
+    const dia = String(d.getDate()).padStart(2, "0");
+    return `${anio}-${mes}-${dia}`;
+  }
+
+  function leerTodasLasSalidasPersonalizadas() {
+    try {
+      const guardado = localStorage.getItem(CLAVE_SALIDA_PERSONALIZADA);
+      return guardado ? JSON.parse(guardado) : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function guardarTodasLasSalidasPersonalizadas(datos) {
+    try {
+      localStorage.setItem(CLAVE_SALIDA_PERSONALIZADA, JSON.stringify(datos));
+    } catch (e) { /* almacenamiento no disponible */ }
+  }
+
+  // Devuelve la hora personalizada ("HH:MM") para ese usuario si fue
+  // definida para el día de "ahora"; si es de un día anterior, la
+  // descarta (la borra de localStorage) y devuelve null.
+  function obtenerSalidaPersonalizada(usuario, ahora) {
+    const todas = leerTodasLasSalidasPersonalizadas();
+    const entrada = todas[usuario];
+    if (!entrada) return null;
+
+    if (entrada.fecha !== fechaISOLocal(ahora)) {
+      delete todas[usuario];
+      guardarTodasLasSalidasPersonalizadas(todas);
+      return null;
+    }
+    return entrada.hora;
+  }
+
+  function definirSalidaPersonalizada(usuario, ahora, hora) {
+    const todas = leerTodasLasSalidasPersonalizadas();
+    todas[usuario] = { fecha: fechaISOLocal(ahora), hora };
+    guardarTodasLasSalidasPersonalizadas(todas);
+  }
+
+  function borrarSalidaPersonalizada(usuario) {
+    const todas = leerTodasLasSalidasPersonalizadas();
+    delete todas[usuario];
+    guardarTodasLasSalidasPersonalizadas(todas);
   }
 
   /* -----------------------------------------------------------------
@@ -420,14 +513,116 @@
     setTimeout(() => reproducirTono(700, 200), 140);
   }
 
+  function actualizarEtiquetaSonido() {
+    if (!el.soundToggleLabel) return;
+    el.soundToggleLabel.textContent = sonidoActivo ? "Sonido activado" : "Sonido desactivado";
+  }
+
   el.soundToggle.addEventListener("click", () => {
     sonidoActivo = !sonidoActivo;
     el.soundToggle.setAttribute("aria-pressed", String(sonidoActivo));
+    actualizarEtiquetaSonido();
     if (sonidoActivo) {
       const ctx = asegurarAudioCtx();
       if (ctx && ctx.state === "suspended") ctx.resume();
       reproducirTono(740, 120);
     }
+  });
+  actualizarEtiquetaSonido();
+
+  /* -----------------------------------------------------------------
+     9.1) PANEL DE AJUSTES (tuerca): sonido + hora de salida de hoy
+  ----------------------------------------------------------------- */
+
+  function panelAjustesAbierto() {
+    return el.settingsToggle.getAttribute("aria-expanded") === "true";
+  }
+
+  // Rellena el panel con los datos de HOY para el usuario activo: hora
+  // de salida efectiva (personalizada si hay, si no la normal) y
+  // habilita/deshabilita los controles según corresponda.
+  function actualizarPanelAjustes() {
+    const ahora = obtenerFechaActual();
+    const horarioUsuario = USUARIOS[usuarioActual] || {};
+    const horarioOriginal = horarioUsuario[ahora.getDay()] || null;
+
+    if (!horarioOriginal) {
+      el.settingsTimeInput.value = "";
+      el.settingsTimeInput.disabled = true;
+      el.settingsSave.disabled = true;
+      el.settingsReset.disabled = true;
+      el.settingsHint.textContent = "Hoy no hay clases cargadas para este usuario.";
+      return;
+    }
+
+    el.settingsTimeInput.disabled = false;
+    el.settingsSave.disabled = false;
+
+    const personalizada = obtenerSalidaPersonalizada(usuarioActual, ahora);
+    el.settingsTimeInput.value = personalizada || horarioOriginal.salida;
+
+    if (personalizada) {
+      el.settingsHint.textContent = `Hoy sale a las ${personalizada} (hora normal: ${horarioOriginal.salida}).`;
+      el.settingsReset.disabled = false;
+    } else {
+      el.settingsHint.textContent = `Hora normal de salida: ${horarioOriginal.salida}.`;
+      el.settingsReset.disabled = true;
+    }
+  }
+
+  function abrirAjustes() {
+    actualizarPanelAjustes();
+    el.settingsOverlay.hidden = false;
+    el.settingsPanel.hidden = false;
+    el.settingsToggle.setAttribute("aria-expanded", "true");
+  }
+
+  function cerrarAjustes() {
+    el.settingsOverlay.hidden = true;
+    el.settingsPanel.hidden = true;
+    el.settingsToggle.setAttribute("aria-expanded", "false");
+  }
+
+  el.settingsToggle.addEventListener("click", () => {
+    if (panelAjustesAbierto()) cerrarAjustes(); else abrirAjustes();
+  });
+  el.settingsOverlay.addEventListener("click", cerrarAjustes);
+  el.settingsClose.addEventListener("click", cerrarAjustes);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && panelAjustesAbierto()) cerrarAjustes();
+  });
+
+  el.settingsSave.addEventListener("click", () => {
+    const ahora = obtenerFechaActual();
+    const horarioUsuario = USUARIOS[usuarioActual] || {};
+    const horarioOriginal = horarioUsuario[ahora.getDay()] || null;
+    if (!horarioOriginal) return;
+
+    const valor = el.settingsTimeInput.value; // "HH:MM", vacío si no se eligió nada
+    if (!valor) {
+      el.settingsHint.textContent = "Elegí una hora antes de guardar.";
+      return;
+    }
+
+    const horaInicio = horaStringADate(horarioOriginal.inicio, ahora);
+    const horaElegida = horaStringADate(valor, ahora);
+
+    // La nueva hora de salida tiene que ser posterior al inicio de clases
+    // de hoy; si no, se avisa y no se guarda nada.
+    if (horaElegida <= horaInicio) {
+      el.settingsHint.textContent = `Tiene que ser una hora posterior al inicio de clases (${horarioOriginal.inicio}).`;
+      return;
+    }
+
+    definirSalidaPersonalizada(usuarioActual, ahora, valor);
+    actualizarPanelAjustes();
+    tick();
+  });
+
+  el.settingsReset.addEventListener("click", () => {
+    borrarSalidaPersonalizada(usuarioActual);
+    actualizarPanelAjustes();
+    tick();
   });
 
   /* -----------------------------------------------------------------
