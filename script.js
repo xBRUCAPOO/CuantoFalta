@@ -551,7 +551,7 @@
       el.settingsTimeInput.disabled = true;
       el.settingsSave.disabled = true;
       el.settingsReset.disabled = true;
-      el.settingsHint.textContent = "Hoy no hay clases cargadas para este usuario.";
+      el.settingsHint.textContent = "Hoy no hay clases :D";
       return;
     }
 
