@@ -271,11 +271,17 @@
 
     soundToggle: document.getElementById("sound-toggle"),
     soundToggleLabel: document.getElementById("sound-toggle-label"),
+    soundVolumeRow: document.getElementById("sound-volume-row"),
+    soundVolumeInput: document.getElementById("sound-volume-input"),
+    soundVolumeValue: document.getElementById("sound-volume-value"),
 
     settingsToggle: document.getElementById("settings-toggle"),
     settingsOverlay: document.getElementById("settings-overlay"),
     settingsPanel: document.getElementById("settings-panel"),
     settingsClose: document.getElementById("settings-close"),
+    settingsSalidaSection: document.getElementById("settings-salida-section"),
+    settingsSalidaLabel: document.getElementById("settings-salida-label"),
+    settingsSalidaControls: document.getElementById("settings-salida-controls"),
     settingsHint: document.getElementById("settings-hint"),
     settingsTimeInput: document.getElementById("settings-time-input"),
     settingsSave: document.getElementById("settings-save"),
@@ -473,6 +479,26 @@
   let sonidoActivo = false;
   let audioCtx = null;
 
+  const CLAVE_VOLUMEN_SONIDO = "cf_volumen_sonido";
+
+  function leerVolumenGuardado() {
+    try {
+      const guardado = localStorage.getItem(CLAVE_VOLUMEN_SONIDO);
+      const valor = guardado === null ? 70 : parseInt(guardado, 10);
+      return Number.isFinite(valor) ? Math.min(100, Math.max(0, valor)) : 70;
+    } catch (e) {
+      return 70;
+    }
+  }
+
+  function guardarVolumen(valor) {
+    try { localStorage.setItem(CLAVE_VOLUMEN_SONIDO, String(valor)); } catch (e) { /* no disponible */ }
+  }
+
+  // volumenSonido va de 0 a 1 (0% a 100% del slider); afecta el pico de
+  // ganancia de reproducirTono más abajo.
+  let volumenSonido = leerVolumenGuardado() / 100;
+
   function asegurarAudioCtx() {
     if (!audioCtx) {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -482,7 +508,7 @@
   }
 
   function reproducirTono(frecuencia, duracionMs, tipo = "sine") {
-    if (!sonidoActivo) return;
+    if (!sonidoActivo || volumenSonido <= 0) return;
     const ctx = asegurarAudioCtx();
     if (!ctx) return;
     const osc = ctx.createOscillator();
@@ -492,7 +518,10 @@
     gain.gain.value = 0.0001;
     osc.connect(gain).connect(ctx.destination);
     const now = ctx.currentTime;
-    gain.gain.exponentialRampToValueAtTime(0.06, now + 0.04);
+    // El pico de ganancia (antes fijo en 0.06) ahora se escala según el
+    // volumen elegido en el deslizable (0 a 1).
+    const pico = Math.max(0.0001, 0.06 * volumenSonido);
+    gain.gain.exponentialRampToValueAtTime(pico, now + 0.04);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + duracionMs / 1000);
     osc.start(now);
     osc.stop(now + duracionMs / 1000 + 0.05);
@@ -518,10 +547,30 @@
     el.soundToggleLabel.textContent = sonidoActivo ? "Sonido activado" : "Sonido desactivado";
   }
 
+  // El deslizable de volumen solo tiene sentido (y solo se muestra)
+  // mientras el sonido está activado.
+  function actualizarVisibilidadVolumen() {
+    if (!el.soundVolumeRow) return;
+    el.soundVolumeRow.hidden = !sonidoActivo;
+  }
+
+  if (el.soundVolumeInput) {
+    el.soundVolumeInput.value = String(Math.round(volumenSonido * 100));
+  }
+  if (el.soundVolumeValue) {
+    el.soundVolumeValue.textContent = `${Math.round(volumenSonido * 100)}%`;
+  }
+
   el.soundToggle.addEventListener("click", () => {
     sonidoActivo = !sonidoActivo;
     el.soundToggle.setAttribute("aria-pressed", String(sonidoActivo));
     actualizarEtiquetaSonido();
+    actualizarVisibilidadVolumen();
+    // Saca el foco del botón después de tocarlo/clickearlo: sin esto, en
+    // varios navegadores (sobre todo en celular) el botón se queda con el
+    // anillo de foco puesto, que se veía como si siguiera "brillando"
+    // activado aunque el sonido ya se haya apagado.
+    el.soundToggle.blur();
     if (sonidoActivo) {
       const ctx = asegurarAudioCtx();
       if (ctx && ctx.state === "suspended") ctx.resume();
@@ -529,6 +578,24 @@
     }
   });
   actualizarEtiquetaSonido();
+  actualizarVisibilidadVolumen();
+
+  if (el.soundVolumeInput) {
+    el.soundVolumeInput.addEventListener("input", () => {
+      const valor = parseInt(el.soundVolumeInput.value, 10) || 0;
+      volumenSonido = valor / 100;
+      if (el.soundVolumeValue) el.soundVolumeValue.textContent = `${valor}%`;
+      guardarVolumen(valor);
+    });
+    // Al soltar el deslizable, se escucha un tonito de referencia con el
+    // volumen recién elegido.
+    el.soundVolumeInput.addEventListener("change", () => {
+      if (!sonidoActivo) return;
+      const ctx = asegurarAudioCtx();
+      if (ctx && ctx.state === "suspended") ctx.resume();
+      reproducirTono(740, 140);
+    });
+  }
 
   /* -----------------------------------------------------------------
      9.1) PANEL DE AJUSTES (tuerca): sonido + hora de salida de hoy
@@ -547,14 +614,19 @@
     const horarioOriginal = horarioUsuario[ahora.getDay()] || null;
 
     if (!horarioOriginal) {
-      el.settingsTimeInput.value = "";
-      el.settingsTimeInput.disabled = true;
-      el.settingsSave.disabled = true;
-      el.settingsReset.disabled = true;
+      // Sin horario hoy: se ocultan la etiqueta de la sección y todos los
+      // controles (input de hora, Guardar, Restablecer, nota), dejando
+      // visible únicamente el mensaje de aviso.
+      if (el.settingsSalidaLabel) el.settingsSalidaLabel.hidden = true;
+      if (el.settingsSalidaControls) el.settingsSalidaControls.hidden = true;
+      if (el.settingsSalidaSection) el.settingsSalidaSection.classList.add("is-empty");
       el.settingsHint.textContent = "Hoy no hay clases :D";
       return;
     }
 
+    if (el.settingsSalidaLabel) el.settingsSalidaLabel.hidden = false;
+    if (el.settingsSalidaControls) el.settingsSalidaControls.hidden = false;
+    if (el.settingsSalidaSection) el.settingsSalidaSection.classList.remove("is-empty");
     el.settingsTimeInput.disabled = false;
     el.settingsSave.disabled = false;
 

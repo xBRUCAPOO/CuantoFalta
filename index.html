@@ -6,7 +6,7 @@
 <title>CuantoFalta?</title>
 <meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida, el próximo recreo y la materia actual." />
 <link rel="shortcut icon" href="Imgs/CauntoFalta_Reloj.png" type="image/x-icon">
-<link rel="stylesheet" href="style.css?v=10" />
+<link rel="stylesheet" href="style.css?v=11" />
 </head>
 <body>
 
@@ -75,17 +75,32 @@
         </svg>
         <span class="sound-toggle-label" id="sound-toggle-label">Sonido desactivado</span>
       </button>
+
+      <!-- Deslizable de volumen: solo se muestra cuando el sonido está
+           activado (lo controla script.js agregando/sacando "hidden"). -->
+      <div class="sound-volume-row" id="sound-volume-row" hidden>
+        <label for="sound-volume-input" class="sound-volume-label">Volumen</label>
+        <input type="range" id="sound-volume-input" class="sound-volume-input" min="0" max="100" value="70" aria-label="Volumen del sonido de avisos" />
+        <span class="sound-volume-value" id="sound-volume-value">70%</span>
+      </div>
     </div>
 
-    <div class="settings-section">
-      <p class="settings-section-label">Hora de salida de hoy</p>
+    <div class="settings-section" id="settings-salida-section">
+      <p class="settings-section-label" id="settings-salida-label">Hora de salida de hoy</p>
       <p class="settings-hint" id="settings-hint">—</p>
-      <div class="settings-time-row">
-        <input type="time" id="settings-time-input" class="settings-time-input" aria-label="Nueva hora de salida" />
-        <button type="button" class="settings-btn settings-btn--primary" id="settings-save">Guardar</button>
+
+      <!-- Controles del editor de hora: se ocultan del todo (no solo se
+           deshabilitan) cuando hoy no hay clases cargadas para el
+           usuario activo, para que en ese caso solo quede visible el
+           mensaje de arriba. -->
+      <div class="settings-salida-controls" id="settings-salida-controls">
+        <div class="settings-time-row">
+          <input type="time" id="settings-time-input" class="settings-time-input" aria-label="Nueva hora de salida" />
+          <button type="button" class="settings-btn settings-btn--primary" id="settings-save">Guardar</button>
+        </div>
+        <button type="button" class="settings-btn settings-btn--ghost" id="settings-reset">Restablecer hora normal</button>
+        <p class="settings-note">ⓘ  El cambio vale solo por hoy. Al pasar el día vuelve a su hora de salida predeterminada.</p>
       </div>
-      <button type="button" class="settings-btn settings-btn--ghost" id="settings-reset">Restablecer hora normal</button>
-      <p class="settings-note">ⓘ  El cambio vale solo por hoy. Al pasar el día vuelve a su hora de salida predeterminada.</p>
     </div>
   </div>
 
@@ -207,6 +222,7 @@
 
   </main>
 
-<script src="script.js?v=6"></script>
+<script src="script.js?v=7"></script>
 </body>
+</html>
 </html>

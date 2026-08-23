@@ -476,7 +476,14 @@ body{
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
-.sound-toggle:hover{ border-color: var(--cyan-dim); color: var(--cyan); }
+/* El hover ANTES ponía el texto/ícono en color "cyan" sin importar si el
+   sonido estaba activado o no: al pasar (o dejar) el mouse sobre el botón
+   recién apagado, se veía del mismo color que cuando está prendido, dando
+   la sensación de que seguía "brillando" como activado. Ahora el hover
+   solo resalta el borde; el color de texto/ícono depende únicamente del
+   estado real (aria-pressed), no del mouse. */
+.sound-toggle:hover{ border-color: var(--cyan-dim); }
+.sound-toggle[aria-pressed="false"]:hover{ color: var(--gray); }
 .sound-toggle:focus-visible{
   outline: 2px solid var(--cyan);
   outline-offset: 2px;
@@ -484,15 +491,63 @@ body{
 .sound-toggle .icon{ width: 18px; height: 18px; flex-shrink: 0; }
 .sound-toggle .icon--off{ display: none; }
 .sound-toggle[aria-pressed="true"]{ color: var(--cyan); box-shadow: 0 0 14px rgba(var(--cyan-rgb),0.35); border-color: var(--cyan-dim); }
+.sound-toggle[aria-pressed="true"]:hover{ color: var(--cyan); }
 .sound-toggle[aria-pressed="true"] .icon--on{ display: block; }
 .sound-toggle[aria-pressed="true"] .icon--off{ display: none; }
 .sound-toggle[aria-pressed="false"] .icon--on{ display: none; }
 .sound-toggle[aria-pressed="false"] .icon--off{ display: block; }
+/* Texto "Sonido activado": mismo color que el reloj en tiempo real de
+   arriba (.clock usa --cyan-soft), en vez de --cyan (heredado del botón),
+   para que combinen visualmente en los dos usuarios. */
+.sound-toggle[aria-pressed="true"] .sound-toggle-label{ color: var(--cyan-soft); }
+
+/* -------------------- Deslizable de volumen (dentro del panel) -------------------- */
+
+.sound-volume-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 0 2px;
+}
+
+.sound-volume-label{
+  font-size: clamp(0.62rem, 1.5vw, 0.7rem);
+  letter-spacing: 0.06em;
+  color: var(--gray);
+  flex-shrink: 0;
+}
+
+.sound-volume-input{
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.sound-volume-value{
+  font-family: var(--font-mono, var(--font-ui));
+  font-size: clamp(0.65rem, 1.6vw, 0.75rem);
+  color: var(--cyan-soft);
+  min-width: 3ch;
+  text-align: right;
+  flex-shrink: 0;
+}
 
 .settings-hint{
   margin: 0 0 10px;
   font-size: clamp(0.68rem, 1.7vw, 0.78rem);
   color: var(--cyan-soft);
+}
+
+/* Cuando hoy no hay clases: la sección de hora de salida queda reducida
+   solamente al mensaje de aviso (ver settings-salida-controls[hidden] y
+   settings-salida-label[hidden] en el JS), centrado y sin el margen
+   inferior que tiene cuando sí hay controles debajo. */
+.settings-section.is-empty .settings-hint{
+  margin: 0;
+  text-align: center;
+  padding: 4px 0 2px;
 }
 
 .settings-time-row{
