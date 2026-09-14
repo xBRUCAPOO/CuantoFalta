@@ -1,6 +1,8 @@
 /* ===================================================================
    ¿CUÁNTO FALTA? — Lógica
-   Toda la configuración de horarios vive en CONFIG_HORARIOS.
+   Toda la configuración de horarios vive en USUARIOS, un objeto con
+   una clave por usuario ("bruca" y "mely"). Cada usuario tiene su
+   propio horario de entrada/salida, recreos y MATERIAS por día.
    No requiere build ni dependencias externas.
 =================================================================== */
 
@@ -8,60 +10,184 @@
   "use strict";
 
   /* -----------------------------------------------------------------
-     1) CONFIGURACIÓN DE HORARIOS
-     Editar únicamente esta sección para adaptar la app a otra escuela.
-     Claves: 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves, 5=Viernes.
-     "inicio" = hora de entrada (referencia para el anillo de progreso).
-     "salida" = hora de fin de jornada.
+     1) CONFIGURACIÓN DE HORARIOS POR USUARIO
+     Editar esta sección para adaptar la app a cada alumno/escuela.
+     Claves de día: 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves, 5=Viernes.
+     "inicio"  = hora de entrada (referencia para el anillo de progreso).
+     "salida"  = hora de fin de jornada.
      "recreos" = lista ordenada de recreos del día.
+     "materias" = lista ordenada de bloques de clase del día. Los
+       horarios de las materias NO deben superponerse con los recreos.
+     Las materias de abajo son INVENTADAS a modo de ejemplo: reemplazar
+     "nombre" por las materias reales de cada alumno.
   ----------------------------------------------------------------- */
-  const CONFIG_HORARIOS = {
-    1: { // Lunes
-      inicio: "13:20",
-      salida: "20:55",
-      recreos: [
-        { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-        { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-        { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-        { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
-      ],
+
+  const USUARIOS = {
+
+    // =================== BRUCA ===================
+    bruca: {
+      1: { // Lunes
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Matemática",         inicio: "13:20", fin: "14:50" },
+          { nombre: "Física",             inicio: "14:55", fin: "16:15" },
+          { nombre: "Programación",       inicio: "16:25", fin: "17:45" },
+          { nombre: "Inglés",             inicio: "17:55", fin: "19:05" },
+          { nombre: "Historia",           inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      2: { // Martes
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Literatura",         inicio: "13:20", fin: "14:50" },
+          { nombre: "Química",            inicio: "14:55", fin: "16:15" },
+          { nombre: "Matemática",         inicio: "16:25", fin: "17:45" },
+          { nombre: "Educación Física",   inicio: "17:55", fin: "19:05" },
+          { nombre: "Biología",           inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      3: { // Miércoles (jornada reducida)
+        inicio: "13:20",
+        salida: "19:05",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+        ],
+        materias: [
+          { nombre: "Arte",               inicio: "13:20", fin: "14:50" },
+          { nombre: "Programación",       inicio: "14:55", fin: "16:15" },
+          { nombre: "Matemática",         inicio: "16:25", fin: "17:45" },
+          { nombre: "Tutoría",            inicio: "17:55", fin: "19:05" },
+        ],
+      },
+      4: { // Jueves
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Física",             inicio: "13:20", fin: "14:50" },
+          { nombre: "Inglés",             inicio: "14:55", fin: "16:15" },
+          { nombre: "Historia",           inicio: "16:25", fin: "17:45" },
+          { nombre: "Química",            inicio: "17:55", fin: "19:05" },
+          { nombre: "Literatura",         inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      5: { // Viernes (jornada reducida)
+        inicio: "13:20",
+        salida: "17:05",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+        ],
+        materias: [
+          { nombre: "Matemática",         inicio: "13:20", fin: "14:50" },
+          { nombre: "Programación",       inicio: "14:55", fin: "16:15" },
+          { nombre: "Educación Física",   inicio: "16:25", fin: "17:05" },
+        ],
+      },
     },
-    2: { // Martes
-      inicio: "13:20",
-      salida: "20:55",
-      recreos: [
-        { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-        { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-        { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-        { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
-      ],
-    },
-    3: { // Miércoles (jornada reducida)
-      inicio: "13:20",
-      salida: "19:05",
-      recreos: [
-        { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-        { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-        { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-      ],
-    },
-    4: { // Jueves
-      inicio: "13:20",
-      salida: "20:55",
-      recreos: [
-        { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-        { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-        { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
-        { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
-      ],
-    },
-    5: { // Viernes (jornada reducida)
-      inicio: "13:20",
-      salida: "17:05",
-      recreos: [
-        { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
-        { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
-      ],
+
+    // =================== MELY ===================
+    mely: {
+      1: { // Lunes
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Contabilidad",           inicio: "13:20", fin: "14:50" },
+          { nombre: "Economía",               inicio: "14:55", fin: "16:15" },
+          { nombre: "Inglés",                 inicio: "16:25", fin: "17:45" },
+          { nombre: "Administración",         inicio: "17:55", fin: "19:05" },
+          { nombre: "Marketing",              inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      2: { // Martes
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Derecho Comercial",      inicio: "13:20", fin: "14:50" },
+          { nombre: "Estadística",            inicio: "14:55", fin: "16:15" },
+          { nombre: "Contabilidad",           inicio: "16:25", fin: "17:45" },
+          { nombre: "Informática",            inicio: "17:55", fin: "19:05" },
+          { nombre: "Psicología Laboral",     inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      3: { // Miércoles (jornada reducida)
+        inicio: "13:20",
+        salida: "19:05",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+        ],
+        materias: [
+          { nombre: "Ética Profesional",      inicio: "13:20", fin: "14:50" },
+          { nombre: "Marketing",              inicio: "14:55", fin: "16:15" },
+          { nombre: "Administración",         inicio: "16:25", fin: "17:45" },
+          { nombre: "Contabilidad",           inicio: "17:55", fin: "19:05" },
+        ],
+      },
+      4: { // Jueves
+        inicio: "13:20",
+        salida: "20:55",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+          { nombre: "Recreo 3", inicio: "17:45", fin: "17:55" },
+          { nombre: "Recreo 4", inicio: "19:05", fin: "19:10" },
+        ],
+        materias: [
+          { nombre: "Economía",               inicio: "13:20", fin: "14:50" },
+          { nombre: "Inglés",                 inicio: "14:55", fin: "16:15" },
+          { nombre: "Derecho Comercial",      inicio: "16:25", fin: "17:45" },
+          { nombre: "Estadística",            inicio: "17:55", fin: "19:05" },
+          { nombre: "Informática",            inicio: "19:10", fin: "20:55" },
+        ],
+      },
+      5: { // Viernes (jornada reducida)
+        inicio: "13:20",
+        salida: "17:05",
+        recreos: [
+          { nombre: "Recreo 1", inicio: "14:50", fin: "14:55" },
+          { nombre: "Recreo 2", inicio: "16:15", fin: "16:25" },
+        ],
+        materias: [
+          { nombre: "Contabilidad",           inicio: "13:20", fin: "14:50" },
+          { nombre: "Marketing",              inicio: "14:55", fin: "16:15" },
+          { nombre: "Administración",         inicio: "16:25", fin: "17:05" },
+        ],
+      },
     },
   };
 
@@ -73,7 +199,38 @@
   const RING_CIRC = 2 * Math.PI * RING_RADIUS;
 
   /* -----------------------------------------------------------------
-     2) REFERENCIAS AL DOM
+     2) USUARIO ACTUAL
+     Se guarda en localStorage para recordarlo entre visitas. El valor
+     por defecto es "mely". El <html data-user="..."> ya viene seteado
+     desde un script inline en el <head> del HTML (evita parpadeos).
+  ----------------------------------------------------------------- */
+
+  function obtenerUsuarioActual() {
+    const enHtml = document.documentElement.getAttribute("data-user");
+    return enHtml === "bruca" ? "bruca" : "mely";
+  }
+
+  let usuarioActual = obtenerUsuarioActual();
+
+  function establecerUsuario(usuario) {
+    usuarioActual = usuario === "bruca" ? "bruca" : "mely";
+    document.documentElement.setAttribute("data-user", usuarioActual);
+    try { localStorage.setItem("cf_usuario", usuarioActual); } catch (e) { /* almacenamiento no disponible */ }
+    actualizarBotonesUsuario();
+    actualizarColoresFondo();
+    tick(); // refresca todo inmediatamente con el nuevo horario/paleta
+  }
+
+  function actualizarBotonesUsuario() {
+    document.querySelectorAll(".user-switch .user-btn").forEach((btn) => {
+      const activo = btn.dataset.user === usuarioActual;
+      btn.classList.toggle("is-active", activo);
+      btn.setAttribute("aria-pressed", String(activo));
+    });
+  }
+
+  /* -----------------------------------------------------------------
+     3) REFERENCIAS AL DOM
   ----------------------------------------------------------------- */
   const el = {
     date: document.getElementById("date"),
@@ -89,6 +246,16 @@
     exitM: document.getElementById("exit-m"),
     exitS: document.getElementById("exit-s"),
     exitStatus: document.getElementById("exit-status"),
+
+    subjectPanel: document.getElementById("subject-panel"),
+    subjectDot: document.getElementById("subject-dot"),
+    subjectStatus: document.getElementById("subject-status"),
+    subjectName: document.getElementById("subject-name"),
+    subjectH: document.getElementById("subject-h"),
+    subjectM: document.getElementById("subject-m"),
+    subjectS: document.getElementById("subject-s"),
+    subjectNext: document.getElementById("subject-next"),
+    subjectRemaining: document.getElementById("subject-remaining"),
 
     recessPanel: document.getElementById("recess-panel"),
     recessDot: document.getElementById("recess-dot"),
@@ -106,7 +273,7 @@
   };
 
   /* -----------------------------------------------------------------
-     3) UTILIDADES DE TIEMPO
+     4) UTILIDADES DE TIEMPO
   ----------------------------------------------------------------- */
 
   // Convierte "HH:MM" en un objeto Date con la fecha de referencia dada.
@@ -131,7 +298,7 @@
   }
 
   /* -----------------------------------------------------------------
-     4) OBTENCIÓN DE FECHA / HORA Y CARGA DE HORARIO DEL DÍA
+     5) OBTENCIÓN DE FECHA / HORA Y CARGA DE HORARIO DEL DÍA
   ----------------------------------------------------------------- */
 
   function obtenerFechaActual() {
@@ -144,12 +311,14 @@
     return `${diaSemana} ${d.getDate()} de ${mes} de ${d.getFullYear()}`;
   }
 
+  // Carga el horario del día para el usuario actualmente seleccionado.
   function cargarHorarioDelDia(d) {
-    return CONFIG_HORARIOS[d.getDay()] || null;
+    const horarioUsuario = USUARIOS[usuarioActual] || {};
+    return horarioUsuario[d.getDay()] || null;
   }
 
   /* -----------------------------------------------------------------
-     5) BÚSQUEDA DEL RECREO ACTUAL / PRÓXIMO
+     6) BÚSQUEDA DEL RECREO ACTUAL / PRÓXIMO
   ----------------------------------------------------------------- */
 
   function buscarProximoRecreo(horario, ahora) {
@@ -173,7 +342,41 @@
   }
 
   /* -----------------------------------------------------------------
-     6) ANIMACIÓN DE DÍGITOS AL CAMBIAR
+     7) BÚSQUEDA DE LA MATERIA ACTUAL / SIGUIENTE
+     Determina en qué materia estamos (si hay alguna en curso), cuál es
+     la próxima materia (ya sea después de la actual, o la primera del
+     día si todavía no arrancaron las clases) y cuántas materias quedan
+     por cursar hoy (sin contar la que está en curso).
+  ----------------------------------------------------------------- */
+
+  function buscarMateriaActual(horario, ahora) {
+    const materias = (horario.materias || []).map((m) => ({
+      ...m,
+      inicioDate: horaStringADate(m.inicio, ahora),
+      finDate: horaStringADate(m.fin, ahora),
+    }));
+
+    const actual = materias.find((m) => ahora >= m.inicioDate && ahora < m.finDate) || null;
+    const futuras = materias.filter((m) => m.inicioDate > ahora);
+
+    if (actual) {
+      // Hay una materia en curso: la "siguiente" es la próxima en el listado.
+      const siguiente = futuras[0] || null;
+      return { tipo: "en_clase", actual, siguiente, restantes: futuras.length };
+    }
+
+    if (futuras.length > 0) {
+      // No hay materia en curso (recreo, hueco o todavía no empieza),
+      // pero quedan materias por delante hoy.
+      return { tipo: "esperando", actual: null, siguiente: futuras[0], restantes: futuras.length };
+    }
+
+    // No hay materia en curso ni materias futuras: terminaron las clases de hoy.
+    return { tipo: "sin_materias", actual: null, siguiente: null, restantes: 0 };
+  }
+
+  /* -----------------------------------------------------------------
+     8) ANIMACIÓN DE DÍGITOS AL CAMBIAR
   ----------------------------------------------------------------- */
 
   const ultimoValor = new WeakMap();
@@ -191,7 +394,7 @@
   }
 
   /* -----------------------------------------------------------------
-     7) SONIDO OPCIONAL (Web Audio API, sin archivos externos)
+     9) SONIDO OPCIONAL (Web Audio API, sin archivos externos)
   ----------------------------------------------------------------- */
 
   let sonidoActivo = false;
@@ -232,6 +435,11 @@
     setTimeout(() => reproducirTono(392, 320), 220);
   }
 
+  function sonarCambioDeMateria() {
+    reproducirTono(500, 160);
+    setTimeout(() => reproducirTono(700, 200), 140);
+  }
+
   el.soundToggle.addEventListener("click", () => {
     sonidoActivo = !sonidoActivo;
     el.soundToggle.setAttribute("aria-pressed", String(sonidoActivo));
@@ -243,7 +451,16 @@
   });
 
   /* -----------------------------------------------------------------
-     8) ACTUALIZACIÓN DEL RELOJ Y LA FECHA
+     10) SWITCH DE USUARIO (Bruca / Mely)
+  ----------------------------------------------------------------- */
+
+  document.querySelectorAll(".user-switch .user-btn").forEach((btn) => {
+    btn.addEventListener("click", () => establecerUsuario(btn.dataset.user));
+  });
+  actualizarBotonesUsuario();
+
+  /* -----------------------------------------------------------------
+     11) ACTUALIZACIÓN DEL RELOJ Y LA FECHA
   ----------------------------------------------------------------- */
 
   function actualizarReloj(ahora) {
@@ -262,7 +479,7 @@
   }
 
   /* -----------------------------------------------------------------
-     9) ANILLO DE PROGRESO (contador principal)
+     12) ANILLO DE PROGRESO (contador principal)
   ----------------------------------------------------------------- */
 
   function inicializarAnillo() {
@@ -299,7 +516,7 @@
   }
 
   /* -----------------------------------------------------------------
-     10) CONTADOR PRINCIPAL: tiempo para la salida
+     13) CONTADOR PRINCIPAL: tiempo para la salida
   ----------------------------------------------------------------- */
 
   function actualizarContadorPrincipal(msRestantes, fraccionTranscurrida, estado) {
@@ -317,7 +534,71 @@
   }
 
   /* -----------------------------------------------------------------
-     11) CONTADOR SECUNDARIO: próximo recreo / recreo en curso
+     14) PANEL DE MATERIA: clase actual, tiempo restante, siguiente
+     materia y cantidad de materias que faltan para irnos.
+  ----------------------------------------------------------------- */
+
+  let estadoMateriaAnterior = null; // para detectar el cambio de materia y sonar aviso
+
+  function textoRestantes(cantidad) {
+    if (cantidad <= 0) return "Es la última materia del día";
+    if (cantidad === 1) return "Queda 1 materia después de esta";
+    return `Quedan ${cantidad} materias después de esta`;
+  }
+
+  function actualizarPanelMaterias(infoMateria, ahora) {
+    if (infoMateria.tipo === "en_clase") {
+      if (estadoMateriaAnterior !== infoMateria.actual.nombre) sonarCambioDeMateria();
+      estadoMateriaAnterior = infoMateria.actual.nombre;
+
+      el.subjectPanel.classList.add("is-active");
+      el.subjectStatus.textContent = "Estás en clase de";
+      el.subjectName.textContent = infoMateria.actual.nombre;
+
+      const restante = infoMateria.actual.finDate - ahora;
+      const { h, m, s } = calcularTiempoRestante(restante);
+      escribirNumero(el.subjectH, h);
+      escribirNumero(el.subjectM, m);
+      escribirNumero(el.subjectS, s);
+
+      el.subjectNext.textContent = infoMateria.siguiente
+        ? `Siguiente: ${infoMateria.siguiente.nombre}`
+        : "Siguiente: no hay más clases hoy";
+      el.subjectRemaining.textContent = textoRestantes(infoMateria.restantes);
+      return;
+    }
+
+    el.subjectPanel.classList.remove("is-active");
+
+    if (infoMateria.tipo === "esperando") {
+      estadoMateriaAnterior = "esperando";
+      el.subjectStatus.textContent = "Sin clase en este momento";
+      el.subjectName.textContent = infoMateria.siguiente.nombre;
+
+      const restante = infoMateria.siguiente.inicioDate - ahora;
+      const { h, m, s } = calcularTiempoRestante(restante);
+      escribirNumero(el.subjectH, h);
+      escribirNumero(el.subjectM, m);
+      escribirNumero(el.subjectS, s);
+
+      el.subjectNext.textContent = `Empieza en ${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+      el.subjectRemaining.textContent = textoRestantes(infoMateria.restantes - 1 >= 0 ? infoMateria.restantes - 1 : 0);
+      return;
+    }
+
+    // tipo === "sin_materias": no quedan más materias hoy
+    estadoMateriaAnterior = "sin_materias";
+    el.subjectStatus.textContent = "Sin más clases hoy";
+    el.subjectName.textContent = "Esperando la salida";
+    escribirNumero(el.subjectH, 0);
+    escribirNumero(el.subjectM, 0);
+    escribirNumero(el.subjectS, 0);
+    el.subjectNext.textContent = "Siguiente: —";
+    el.subjectRemaining.textContent = "No quedan materias por cursar";
+  }
+
+  /* -----------------------------------------------------------------
+     15) CONTADOR SECUNDARIO: próximo recreo / recreo en curso
   ----------------------------------------------------------------- */
 
   let estadoRecreoAnterior = null; // para detectar transiciones y disparar sonido
@@ -370,13 +651,13 @@
   }
 
   /* -----------------------------------------------------------------
-     12) MENSAJES ESPECIALES (fin de semana / jornada finalizada)
+     16) MENSAJES ESPECIALES (fin de semana / jornada finalizada)
   ----------------------------------------------------------------- */
 
   let yaSonoFinJornada = false;
 
   function mostrarMensajesEspeciales(texto, icono) {
-    el.stage.querySelectorAll(".ring-wrap, .recess-panel").forEach((n) => (n.hidden = true));
+    el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = true));
     el.specialMessage.hidden = false;
     el.specialText.textContent = texto;
     el.specialIcon.textContent = icono;
@@ -384,11 +665,11 @@
 
   function ocultarMensajesEspeciales() {
     el.specialMessage.hidden = true;
-    el.stage.querySelectorAll(".ring-wrap, .recess-panel").forEach((n) => (n.hidden = false));
+    el.stage.querySelectorAll(".ring-wrap, .subject-panel, .recess-panel").forEach((n) => (n.hidden = false));
   }
 
   /* -----------------------------------------------------------------
-     13) CICLO PRINCIPAL
+     17) CICLO PRINCIPAL
   ----------------------------------------------------------------- */
 
   function tick() {
@@ -436,14 +717,31 @@
     const estadoPrincipal = msHastaSalida < 5 * 60 * 1000 ? "ultimos_minutos" : "normal";
     actualizarContadorPrincipal(msHastaSalida, transcurridoJornada, estadoPrincipal);
 
+    // --- Panel de materia actual ---
+    const infoMateria = buscarMateriaActual(horario, ahora);
+    actualizarPanelMaterias(infoMateria, ahora);
+
     // --- Contador secundario (recreos) ---
     const infoRecreo = buscarProximoRecreo(horario, ahora);
     actualizarContadorSecundario(infoRecreo, ahora);
   }
 
   /* -----------------------------------------------------------------
-     14) FONDO ANIMADO: partículas tipo constelación
+     18) FONDO ANIMADO: partículas tipo constelación
+     Los colores se leen desde las variables CSS del usuario activo,
+     así que el fondo cambia de tono automáticamente al cambiar de tema.
   ----------------------------------------------------------------- */
+
+  let colorLinea = "rgba(91, 231, 255, ALPHA)";
+  let colorPunto = "rgba(62, 115, 215, 0.55)";
+
+  function actualizarColoresFondo() {
+    const estilos = getComputedStyle(document.documentElement);
+    const cyanRgb = estilos.getPropertyValue("--cyan-rgb").trim() || "91, 231, 255";
+    const whiteRgb = estilos.getPropertyValue("--white-rgb").trim() || "243, 246, 250";
+    colorLinea = `rgba(${cyanRgb}, ALPHA)`;
+    colorPunto = `rgba(${whiteRgb}, 0.45)`;
+  }
 
   function iniciarFondoParticulas() {
     const canvas = document.getElementById("bg-canvas");
@@ -486,7 +784,7 @@
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < DIST_MAX) {
             const op = (1 - dist / DIST_MAX) * 0.12;
-            ctx.strokeStyle = `rgba(91, 231, 255, ${op})`;
+            ctx.strokeStyle = colorLinea.replace("ALPHA", op.toFixed(3));
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -498,7 +796,7 @@
       for (const p of particulas) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(62, 115, 215, 0.55)";
+        ctx.fillStyle = colorPunto;
         ctx.fill();
       }
 
@@ -511,11 +809,12 @@
   }
 
   /* -----------------------------------------------------------------
-     15) INICIO DE LA APLICACIÓN
+     19) INICIO DE LA APLICACIÓN
   ----------------------------------------------------------------- */
 
   function iniciar() {
     inicializarAnillo();
+    actualizarColoresFondo();
     iniciarFondoParticulas();
     tick();
     setInterval(tick, 1000);

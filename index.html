@@ -4,11 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>CuantoFalta?</title>
-<meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida y el próximo recreo." />
+<meta name="description" content="Contador en tiempo real del tiempo restante hasta la salida, el próximo recreo y la materia actual." />
 <link rel="shortcut icon" href="Imgs/CauntoFalta_Reloj.png" type="image/x-icon">
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+<script>
+  /* Aplica el usuario guardado ANTES de pintar el resto de la página,
+     para evitar el "parpadeo" de un tema al cargar y mostrar el otro. */
+  (function () {
+    try {
+      var guardado = localStorage.getItem("cf_usuario");
+      document.documentElement.setAttribute("data-user", guardado === "bruca" ? "bruca" : "mely");
+    } catch (e) {
+      document.documentElement.setAttribute("data-user", "mely");
+    }
+  })();
+</script>
 
   <!-- Fondo animado: partículas / líneas tecnológicas -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -20,6 +33,12 @@
   <span class="corner corner--tr" aria-hidden="true"></span>
   <span class="corner corner--bl" aria-hidden="true"></span>
   <span class="corner corner--br" aria-hidden="true"></span>
+
+  <!-- Switch de usuario: cambia la paleta de colores/tipografías y el horario cargado -->
+  <div class="user-switch" id="user-switch" role="group" aria-label="Seleccionar usuario">
+    <button type="button" class="user-btn" data-user="bruca">Bruca</button>
+    <button type="button" class="user-btn" data-user="mely">Mely</button>
+  </div>
 
   <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="Activar sonido de avisos">
     <svg class="icon icon--on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -47,12 +66,12 @@
         <svg class="ring" viewBox="0 0 320 320" id="ring-svg" aria-hidden="true">
           <defs>
             <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#7ee8ff" />
-              <stop offset="100%" stop-color="#3fa9d6" />
+              <stop offset="0%" style="stop-color:var(--cyan-soft)" />
+              <stop offset="100%" style="stop-color:var(--cyan)" />
             </linearGradient>
             <linearGradient id="sweepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#9ff6ff" stop-opacity="0.55" />
-              <stop offset="100%" stop-color="#9ff6ff" stop-opacity="0" />
+              <stop offset="0%" style="stop-color:var(--cyan-soft)" stop-opacity="0.55" />
+              <stop offset="100%" style="stop-color:var(--cyan-soft)" stop-opacity="0" />
             </linearGradient>
           </defs>
           <circle class="ring-track" cx="160" cy="160" r="140" />
@@ -71,6 +90,28 @@
             <span class="unit"><span class="num" id="exit-s">00</span><span class="unit-label">s</span></span>
           </div>
           <p class="sub-status" id="exit-status"></p>
+        </div>
+      </div>
+
+      <!-- Panel de materia: en qué clase estamos, cuánto falta para que termine,
+           cuál es la siguiente y cuántas materias quedan hasta la salida -->
+      <div class="subject-panel" id="subject-panel">
+        <div class="subject-head">
+          <span class="subject-dot" id="subject-dot" aria-hidden="true"></span>
+          <p class="subject-status" id="subject-status">Cargando horario…</p>
+        </div>
+
+        <p class="subject-name" id="subject-name">—</p>
+
+        <div class="subject-time" id="subject-time">
+          <span class="num" id="subject-h">00</span><span class="small-label">h</span>
+          <span class="num" id="subject-m">00</span><span class="small-label">m</span>
+          <span class="num" id="subject-s">00</span><span class="small-label">s</span>
+        </div>
+
+        <div class="subject-footer">
+          <p class="subject-next" id="subject-next">Siguiente: —</p>
+          <p class="subject-remaining" id="subject-remaining">—</p>
         </div>
       </div>
 
